@@ -2,13 +2,11 @@ package bemax.shootinggame;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -20,13 +18,13 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	private Rect field;
 	private Matrix matrix;
 	private boolean loop;
-    
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+
         surfaceview = (SurfaceView)findViewById(R.id.GameView);
 
         holder = surfaceview.getHolder();
@@ -34,21 +32,21 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 
         loop = true;
     }
-        public void run() {
+
+    public void run() {
     	Canvas canvas;
+    	BackScreen backScreen  = new BackScreen(surfaceview.getResources());
 		Paint paint = new Paint(Color.BLACK);
 		float[] values = new float[9];
 		matrix.getValues(values);
 		while(loop){
 			canvas = holder.lockCanvas();
+			paint.setColor(Color.BLUE);
 			canvas.drawRect(field, paint);
+Log.d("",""+field.bottom);
 
 			canvas.concat(matrix);
-
-			Bitmap bitmap = BitmapFactory.decodeResource(surfaceview.getResources(), R.drawable.ic_launcher);
-
-			canvas.drawBitmap(bitmap, 0, 0, null);
-			canvas.drawBitmap(bitmap, 480-bitmap.getWidth(),750-bitmap.getHeight(), paint);
+			canvas.drawBitmap(backScreen.getBackScreen(), matrix, null);
 
 			holder.unlockCanvasAndPost(canvas);
 		}
@@ -59,11 +57,11 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 		field = new Rect(0,0,width,height);
 		matrix = new Matrix();
 		float sx = 1.0f * width / 480;
-		float sy = 1.0f * height / 750;
+		float sy = 1.0f * height / 780;
 		float[] values = new float[9];
 		matrix.getValues(values);
 		if(sx<sy){
-			float dy = (height - sx*750)/2;
+			float dy = (height - sx*780)/2;
 			values[Matrix.MSCALE_X] = sx;
 			values[Matrix.MSCALE_Y] = sx;
 			values[Matrix.MTRANS_Y] = dy;
