@@ -1,7 +1,7 @@
 package bemax.shootinggame;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -39,17 +39,62 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 		Paint paint = new Paint(Color.BLACK);
 		float[] values = new float[9];
 		matrix.getValues(values);
+		long st, ed,dist;
+
+		// Imageのセット
+		MyPlane.image = BitmapFactory.decodeResource(surfaceview.getResources(), R.drawable.myplane);
+		Enemy00.image = BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy00);
+		Enemy01.image = BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy01);
+		Enemy02.image = BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy02);
+
+		MyPlane myplane = new MyPlane();
+		Enemy00 e0 = new Enemy00();
+		Enemy01 e1 = new Enemy01();
+		Enemy02 e2 = new Enemy02();
+
+		myplane.move(200,600,3,0);
+		e0.move(100, -80, 0, 2);
+		e1.move(200, -80, 0, 12);
+		e2.move(400, -80, 4, 2);
+
 		while(loop){
+			st = System.currentTimeMillis();
+
 			canvas = holder.lockCanvas();
 			paint.setColor(Color.BLUE);
 			canvas.drawRect(field, paint);
-Log.d("",""+field.bottom);
+
+			myplane.move();
+			e0.move();
+			e1.move(myplane);
+			e2.move();
 
 			canvas.concat(matrix);
-			canvas.drawBitmap(backScreen.getBackScreen(), matrix, null);
+			backScreen.drawBackScreen(canvas);
+			myplane.draw(canvas);
+			e0.draw(canvas);
+			e1.draw(canvas);
+			e2.draw(canvas);
 
 			holder.unlockCanvasAndPost(canvas);
+
+			ed = System.currentTimeMillis();
+			dist = ed - st;
+			Log.d("DIST",""+dist);
+			if(dist < 20){
+				try {
+					Thread.sleep(30-ed+st);
+				} catch (InterruptedException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
+			}
 		}
+
+	}
+
+	private void Log(String string, String string2) {
+		// TODO 自動生成されたメソッド・スタブ
 
 	}
 
