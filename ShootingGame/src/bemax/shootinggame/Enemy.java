@@ -6,15 +6,19 @@ public abstract class Enemy extends Sprite{
 	protected int point;
 	protected Random rand;
 
-	public Enemy(int point){
+	public Enemy(){
 		super();
-		this.point = point;
 		rand = new Random();
 	}
 
-	public void setPoint(int p){
-		this.point = p;
-	}
-
 	public abstract void move(MyPlane mp);
+
+	public abstract void move();
+
+	public void reset(){
+		y = -image.getHeight() * 2;
+		x = rand.nextFloat() * (480-image.getWidth());
+		dx = rand.nextInt(5) + 3;
+		dy = rand.nextInt(5) + 5;
+	}
 }

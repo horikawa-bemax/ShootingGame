@@ -5,12 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 public class Enemy02 extends Enemy {
-	static Bitmap image;
 	private Paint paint;
 	private int alp;
 
-	public Enemy02() {
-		super(30);
+	public Enemy02(Bitmap img) {
+		super();
+		image = img;
+		point = 30;
 		alp = 128;
 		paint = new Paint();
 		paint.setAlpha(alp);
@@ -35,11 +36,11 @@ public class Enemy02 extends Enemy {
 		}
 		switch(alp/50){
 		case 0:
-			paint.setAlpha((alp%50)*4+55);
+			paint.setAlpha((alp%50)*5);
 		case 1:
 			break;
 		case 2:
-			paint.setAlpha(255 - (alp%50)*4);
+			paint.setAlpha(255 - (alp%50)*5);
 		case 3:
 			break;
 		}
@@ -50,16 +51,15 @@ public class Enemy02 extends Enemy {
 		if(x<0){
 			x = 0;
 			dx = -dx;
-		}else if(x > 399){
-			x = 399;
+		}else if(x > 480-image.getWidth()){
+			x = 480 - image.getWidth();
 			dx = -dx;
 		}
 
 		matrix.setTranslate(x, y);
 
-		if(y > 780){
-			x = rand.nextInt(400);
-			y = -80;
+		if(y > 800){
+			reset();
 		}
 	}
 

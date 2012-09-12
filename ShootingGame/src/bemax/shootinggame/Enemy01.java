@@ -5,10 +5,11 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 public class Enemy01 extends Enemy {
-	static Bitmap image;
 
-	public Enemy01(){
-		super(20);
+	public Enemy01(Bitmap img){
+		super();
+		image = img;
+		point = 20;
 	}
 
 	@Override
@@ -26,8 +27,7 @@ public class Enemy01 extends Enemy {
 		matrix.setTranslate(x, y);
 
 		if(y>780){
-			y = -80;
-			x = rand.nextInt(400);
+			reset();
 		}
 	}
 

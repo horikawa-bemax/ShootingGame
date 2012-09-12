@@ -56,6 +56,7 @@ public class BackScreen {
 		speed = 5;
 		begin = (mapLength - 10)*96;
 		backScreen = Bitmap.createBitmap(480,96*(map.length+9),Config.ARGB_8888);
+
 		Canvas c = new Canvas(backScreen);
 		Matrix m = new Matrix();
 		for(int i=0; i<map.length + 9; i++){

@@ -5,45 +5,63 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 
 public class Enemy00 extends Enemy{
-	private float cx, cy, deg;
-	static Bitmap image;
-	double d;
 
-	public Enemy00() {
-		super(10);
-		cx = 0;
-		cy = 0;
-		deg = 0;
+	public Enemy00(Bitmap img) {
+		super();
+		// 敵機の画像データ
+		image = img;
+
+		// 倒した時の得点
+		point = 10;
 	}
 
+	// 敵機を移動させる
 	@Override
 	public void move() {
-		deg += 0.002;
-		if(deg>360){
-			deg = deg%360;
-		}
-		d = deg*180/Math.PI;
-		cx = (float)Math.cos(d);
-		cy = (float)Math.sin(d);
-
+		// 敵機の座標を更新
 		x +=  dx;
 		y += dy;
 
-		values[Matrix.MTRANS_X] = x + cx * 60;
-		values[Matrix.MTRANS_Y] = y + cy * 40;
-		matrix.setValues(values);
+		// 左または右からはみ出ようとすると反射する
+		if(x<0){
+			x = 0;
+			dx = -dx;
+		}else if(x > 480-image.getWidth()){
+			x = 480 - image.getWidth();
+			dx = -dx;
+		}
 
-		if(y > 860){
-			y = -80;
-			x = rand.nextInt(340) + 60;
+		// 敵機を移動
+		matrix.setTranslate(x, y);
+
+		// 下からはみ出したら、リセットする
+		if(y > 800){
+			reset();
 		}
 	}
 
+	// 敵機をキャンバスに描画する
 	public void draw(Canvas canvas) {
 		canvas.drawBitmap(image, matrix, null);
 	}
 
+	// 主人公機をターゲットにした敵機の移動
 	public void move(MyPlane mp){
 		move();
+	}
+
+	// 敵機をスタート位置にリセットする
+	public void reset(){
+		// 敵機の初期y座標
+		y = -image.getHeight() * 2;
+
+		// 敵機の初期x座標
+		x = rand.nextFloat() * (480-image.getWidth());
+
+		// 敵機のx軸方向への初期増分
+		dx = 0;
+
+		// 敵機のy軸方向への初期増分
+		dy = rand.nextFloat() * 10 + 5; //=>5.0 ~ 14.999
 	}
 }
