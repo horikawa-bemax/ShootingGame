@@ -8,6 +8,7 @@ import android.util.Log;
 public class MyPlane extends Sprite {
 	private Bitmap image;
 	private float px, py;
+	private final int MOVE = 20;
 
 	public MyPlane(Bitmap img){
 		super();
@@ -18,8 +19,17 @@ public class MyPlane extends Sprite {
 	}
 
 	public void move() {
-		dx = px - x;
-		dy = py - y;
+		float ddx = px - x;
+		float ddy = py - y;
+		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);
+
+		if(len >= MOVE){
+			dx = ddx * MOVE / len;
+			dy = ddy * MOVE / len;
+		}else{
+			dx = ddx;
+			dy = ddy;
+		}
 
 		x += dx;
 		y += dy;
@@ -41,8 +51,8 @@ public class MyPlane extends Sprite {
 		return y;
 	}
 
-	public void setPlace(float x, float y){
-		px = x - image.getWidth()/2;
-		py = y - image.getHeight()/2;
+	public void setPlace(float tx, float ty){
+		px = tx - image.getWidth()/2;
+		py = ty - image.getHeight()/2;
 	}
 }
