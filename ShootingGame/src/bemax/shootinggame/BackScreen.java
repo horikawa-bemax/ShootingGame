@@ -68,7 +68,6 @@ public class BackScreen {
 	}
 
 	public void drawBackScreen(Canvas canvas){
-		long st =  System.currentTimeMillis();
 		begin -= speed;
 		if(begin < 0){
 			begin = mapLength * 96 + begin;
@@ -76,7 +75,5 @@ public class BackScreen {
 		r1.set(0, begin, 480, 780+begin);
 		r2.set(0, 0, 480, 780);
 		canvas.drawBitmap(backScreen,r1,r2,null );
-		long ed = 	System.currentTimeMillis();
-		//Log.d("DRAW=DIST",""+(ed-st));
 	}
 }
