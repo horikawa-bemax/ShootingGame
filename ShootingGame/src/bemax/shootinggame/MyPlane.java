@@ -5,40 +5,44 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.util.Log;
 
-// ŽålŒö‹@ƒNƒ‰ƒX
+// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½Nï¿½ï¿½ï¿½X
 public class MyPlane extends Sprite {
-/*## ƒCƒ“ƒXƒ^ƒ“ƒX•Ï” ##*/
-	// ŒvŽZ—p‚Ì•Ï”
+/*## ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½Ïï¿½ ##*/
+	// ï¿½vï¿½Zï¿½pï¿½Ì•Ïï¿½
 	private float px, py;
+	private int bno;
+	private long shoottime;
 
-	// ŽålŒö‹@‚ÌˆÚ“®—Ê(’è”)
+	// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½ÌˆÚ“ï¿½ï¿½ï¿½(ï¿½è”)
 	private final int MOVE = 20;
 
-/*## ƒRƒ“ƒXƒgƒ‰ƒNƒ^ ##*/
+/*## ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^ ##*/
 	public MyPlane(Bitmap img){
 		super();
-		// ‰æ‘œ‚Ì‰Šú‰»
+		// ï¿½æ‘œï¿½Ìï¿½ï¿½ï¿½
 		image = img;
 
-		// xÀ•W‚Ì‰Šú‰»
+		// xï¿½ï¿½ï¿½Wï¿½Ìï¿½ï¿½ï¿½
 		px  = x = 240 - image.getWidth()/2;
 
-		// yÀ•W‚Ì‰Šú‰»
+		// yï¿½ï¿½ï¿½Wï¿½Ìï¿½ï¿½ï¿½
 		py = y = 280 - image.getHeight();
 
-		// ˆÚ“®—Ê‚Ì‰Šú‰»
+		// ï¿½Ú“ï¿½ï¿½Ê‚Ìï¿½ï¿½ï¿½
 		dx = dy = 0;
+		
+		bno = 0;
 	}
 
-/*## ƒCƒ“ƒXƒ^ƒ“ƒXƒƒ\ƒbƒh ##*/
-	// ˆÚ“®‚·‚é
+/*## ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½\ï¿½bï¿½h ##*/
+	// ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½
 	public void move() {
-		// ŽO•½•û‚Ì’è—‚É‚æ‚èAŒ»’n“_‚Æƒ^ƒbƒ`“_‚Ì‹——£‚ðŒvŽZ‚·‚é
+		// ï¿½Oï¿½ï¿½ï¿½ï¿½Ì’è—ï¿½É‚ï¿½ï¿½Aï¿½ï¿½ï¿½nï¿½_ï¿½Æƒ^ï¿½bï¿½`ï¿½_ï¿½Ì‹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 		float ddx = px - x;
 		float ddy = py - y;
 		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);
 
-		// ˆÚ“®—Ê‚ÌŒˆ’è
+		// ï¿½Ú“ï¿½ï¿½Ê‚ÌŒï¿½ï¿½ï¿½
 		if(len >= MOVE){
 			dx = ddx * MOVE / len;
 			dy = ddy * MOVE / len;
@@ -47,34 +51,45 @@ public class MyPlane extends Sprite {
 			dy = ddy;
 		}
 
-		// ˆÚ“®æ‚ÌÀ•W‚ðŒˆ’è
+		// ï¿½Ú“ï¿½ï¿½ï¿½Ìï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		x += dx;
 		y += dy;
 
-		// ŽålŒö‹@‚ðˆÚ“®‚³‚¹‚é
+		// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		values[Matrix.MTRANS_X] = x;
 		values[Matrix.MTRANS_Y] = y;
 		matrix.setValues(values);
 	}
 
-	// •`‰æ‚·‚é
+	// ï¿½`ï¿½æ‚·ï¿½ï¿½
 	public void draw(Canvas canvas) {
 		canvas.drawBitmap(image, matrix, null);
 	}
 
-	// xÀ•W‚ð•Ô‚·
+	// xï¿½ï¿½ï¿½Wï¿½ï¿½Ô‚ï¿½
 	public float getX(){
 		return x;
 	}
 
-	// yÀ•W‚ð•Ô‚·
+	// yï¿½ï¿½ï¿½Wï¿½ï¿½Ô‚ï¿½
 	public float getY(){
 		return y;
 	}
 
-	// ƒ^ƒbƒ`‚µ‚½ˆÊ’u‚©‚çApx,py‚ð‘ª’è
+	// ï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½ï¿½Apx,pyï¿½ð‘ª’ï¿½
 	public void setPlace(float tx, float ty){
 		px = tx - image.getWidth()/2;
 		py = ty - image.getHeight()/2;
+	}
+	
+	public void shoot(Bullet[] b){
+		if(!b[bno].getFly() && System.currentTimeMillis()-shoottime > 200){
+			b[bno].shoot(x + image.getWidth()/2, y);
+			bno++;
+			if (bno==5){
+				bno = 0;
+			}
+			shoottime = System.currentTimeMillis();
+		}
 	}
 }

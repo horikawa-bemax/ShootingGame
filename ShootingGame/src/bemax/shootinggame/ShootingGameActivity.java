@@ -23,122 +23,145 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	private boolean loop;
 	private MyPlane myplane;
 	private Enemy[] enemies;
+	private Bullet[] bullets;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // ƒŒƒCƒAƒEƒgƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+        // ï¿½ï¿½ï¿½Cï¿½Aï¿½Eï¿½gï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
         setContentView(R.layout.main);
 
-        // ƒQ[ƒ€‰æ–ÊƒIƒuƒWƒFƒNƒg‚ğì¬
+        // ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ÊƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ì¬
         surfaceview = (SurfaceView)findViewById(R.id.GameView);
 
-        // ƒQ[ƒ€‰æ–ÊŠÇ——pƒIƒuƒWƒFƒNƒg‚ğì¬
+        // ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ÊŠÇ—ï¿½ï¿½pï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ì¬
         holder = surfaceview.getHolder();
         holder.addCallback(this);
 
-        // ƒQ[ƒ€‰æ–Ê‚É‘Î‚µAƒ^ƒbƒ`ƒZƒ“ƒT[‚ğ—LŒø‚É‚·‚é
+        // ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½Ê‚É‘Î‚ï¿½ï¿½Aï¿½^ï¿½bï¿½`ï¿½Zï¿½ï¿½ï¿½Tï¿½[ï¿½ï¿½Lï¿½ï¿½É‚ï¿½ï¿½ï¿½
         surfaceview.setOnTouchListener(this);
 
-        // “G‹@”z—ñ‚Ì‰Šú‰»
+        // ï¿½Gï¿½@ï¿½zï¿½ï¿½Ìï¿½ï¿½ï¿½
         enemies = new Enemy[3];
+        
+        bullets = new Bullet[5];
 
         loop = true;
     }
 
     public void run() {
-    /*## ƒ[ƒJƒ‹•Ï”‚ÌéŒ¾ ##*/
-    	// ŠG‚ğ•`‚­‚½‚ß‚ÌƒLƒƒƒ“ƒoƒXƒIƒuƒWƒFƒNƒg
+    /*## ï¿½ï¿½ï¿½[ï¿½Jï¿½ï¿½ï¿½Ïï¿½ï¿½ÌéŒ¾ ##*/
+    	// ï¿½Gï¿½ï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ÌƒLï¿½ï¿½ï¿½ï¿½ï¿½oï¿½Xï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
     	Canvas canvas;
 
-    	// ”wŒiƒIƒuƒWƒFƒNƒg‚ğ¶¬
+    	// ï¿½wï¿½iï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ğ¶ï¿½
     	BackScreen backScreen  = new BackScreen(surfaceview.getResources());
 
-    	// ŠG‚ğ•`‚­‚½‚ß‚Ìƒyƒ“‚ğ¶¬
+    	// ï¿½Gï¿½ï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ß‚Ìƒyï¿½ï¿½ï¿½ğ¶ï¿½
 		Paint paint = new Paint(Color.BLACK);
 
-		// s—ñŒvZ—p‚Ì”z—ñ‚ğ¶¬‚µ‰Šú‰»‚·‚é
+		// ï¿½sï¿½ï¿½vï¿½Zï¿½pï¿½Ì”zï¿½ï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		float[] values = new float[9];
 		matrix.getValues(values);
 
-		// ŠÔŒv‘ª—p‚Ì•Ï”
+		// ï¿½ï¿½ï¿½ÔŒvï¿½ï¿½ï¿½pï¿½Ì•Ïï¿½
 		long st, ed,dist;
 
-	/*## ƒvƒƒOƒ‰ƒ€ ##*/
-		// ålŒö‹@‚Ì¶¬
+	/*## ï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ ##*/
+		// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½Ìï¿½ï¿½ï¿½
 		myplane = new MyPlane(BitmapFactory.decodeResource(surfaceview.getResources(), R.drawable.myplane));
 
-		// “G‹@00‚Ì¶¬
+		// ï¿½Gï¿½@00ï¿½Ìï¿½ï¿½ï¿½
 		enemies[0] = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy00));
 
-		// “G‹@01‚Ì¶¬
+		// ï¿½Gï¿½@01ï¿½Ìï¿½ï¿½ï¿½
 		enemies[1] = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy01));
 
-		// “G‹@02‚Ì¶¬
+		// ï¿½Gï¿½@02ï¿½Ìï¿½ï¿½ï¿½
 		enemies[2]  = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy02));
 
-		// ålŒö‹@‚Ì”z’u
+		bullets[0] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
+		bullets[1] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
+		bullets[2] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
+		bullets[3] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
+		bullets[4] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
+
+		// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½Ì”zï¿½u
 //		myplane.move();
 
-		// “G‹@‚Ì”z’uiƒ‰ƒ“ƒ_ƒ€j
+		// ï¿½Gï¿½@ï¿½Ì”zï¿½uï¿½iï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½j
 		enemies[0].reset();
 		enemies[1].reset();
 		enemies[2].reset();
 
-		// ƒQ[ƒ€‰æ–Ê•`‰æˆ—
+		// ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½Ê•`ï¿½æˆï¿½ï¿½
 		while(loop){
-			// •`‰æŠJnŠÔ‚ğ•Û‘¶
+			// ï¿½`ï¿½ï¿½Jï¿½nï¿½ï¿½ï¿½Ô‚ï¿½Û‘ï¿½
 			st = System.currentTimeMillis();
 
-			// ålŒö‹@E“G‹@‚ÌˆÊ’u‚ğXV
+			myplane.shoot(bullets);
+			
+			// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½Eï¿½Gï¿½@ï¿½ÌˆÊ’uï¿½ï¿½ï¿½Xï¿½V
 			myplane.move();
+			bullets[0].move();
+			bullets[1].move();
+			bullets[2].move();
+			bullets[3].move();
+			bullets[4].move();
+			
 			enemies[0].move();
 			enemies[1].move();
 			enemies[2].move();
 
-			// — –Ê‚ğæ“¾
+			// ï¿½ï¿½ï¿½Ê‚ï¿½ï¿½æ“¾
 			canvas = holder.lockCanvas();
 
-			// ÂF‚Ìƒyƒ“‚ğ‘I‘ğ
+			// ï¿½ÂFï¿½Ìƒyï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½
 			paint.setColor(Color.BLUE);
 
-			// ‘S— –Ê‚ğÂ‚Å“h‚è‚Â‚Ô‚·
+			// ï¿½Sï¿½ï¿½ï¿½Ê‚ï¿½Â‚Å“hï¿½ï¿½Â‚Ô‚ï¿½
 			canvas.drawRect(field, paint);
 
-			// À‹@‚Ì‰æ–ÊƒTƒCƒY‚É‡‚í‚¹‚Ä— –Ê‚ğ•ÏŒ`
+			// ï¿½ï¿½ï¿½@ï¿½Ì‰ï¿½ÊƒTï¿½Cï¿½Yï¿½Éï¿½ï¿½í‚¹ï¿½Ä—ï¿½ï¿½Ê‚ï¿½ÏŒ`
 			canvas.concat(matrix);
 
-			// ”wŒi‰æ‘œ‚ğ•`‰æ‚·‚é
+			// ï¿½wï¿½iï¿½æ‘œï¿½ï¿½`ï¿½æ‚·ï¿½ï¿½
 			backScreen.drawBackScreen(canvas);
 
-			// ålŒö‹@‚ğ•`‰æ‚·‚é
+			// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½ï¿½`ï¿½æ‚·ï¿½ï¿½
 			myplane.draw(canvas);
-
-			// “G‹@‚ğ•`‰æ‚·‚é
+			
+			bullets[0].draw(canvas);
+			bullets[1].draw(canvas);
+			bullets[2].draw(canvas);
+			bullets[3].draw(canvas);
+			bullets[4].draw(canvas);
+			
+			// ï¿½Gï¿½@ï¿½ï¿½`ï¿½æ‚·ï¿½ï¿½
 			enemies[0].draw(canvas);
 			enemies[1].draw(canvas);
 			enemies[2].draw(canvas);
 
-			// ‘O–Ê‚Æ— –Ê‚ğ“ü‚ê‘Ö‚¦‚é
+			// ï¿½Oï¿½Ê‚Æ—ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½Ö‚ï¿½ï¿½ï¿½
 			holder.unlockCanvasAndPost(canvas);
 
-			// •`‰æI—¹ŠÔ‚ğ•Û‘¶
+			// ï¿½`ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½Û‘ï¿½
 			ed = System.currentTimeMillis();
 
-			// •`‰æ‚É‚©‚©‚Á‚½ŠÔ‚ğŒvZ
+			// ï¿½`ï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½vï¿½Z
 			dist = ed - st;
 
 			Log.d("DIST",""+dist);
 
-			// •`‰æŠÔ‚ª20ƒ~ƒŠ•b‚æ‚è­‚È‚©‚Á‚½‚çA­‚µ‘Ò‚Â
+			// ï¿½`ï¿½æï¿½Ô‚ï¿½20ï¿½~ï¿½ï¿½ï¿½bï¿½ï¿½è­ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Ò‚ï¿½
 			if(dist < 20){
 				try {
-					// 1ƒ^[ƒ“‚ª20ƒ~ƒŠ•b‚É‚È‚é‚æ‚¤‚É‘Ò‚¿ŠÔ‚ğ’²®‚·‚é
+					// 1ï¿½^ï¿½[ï¿½ï¿½ï¿½ï¿½20ï¿½~ï¿½ï¿½ï¿½bï¿½É‚È‚ï¿½æ‚¤ï¿½É‘Ò‚ï¿½ï¿½ï¿½ï¿½Ô‚ğ’²ï¿½ï¿½ï¿½ï¿½ï¿½
 					Thread.sleep(20-ed+st);
 				} catch (InterruptedException e) {
-					// TODO ©“®¶¬‚³‚ê‚½ catch ƒuƒƒbƒN
+					// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ catch ï¿½uï¿½ï¿½ï¿½bï¿½N
 					e.printStackTrace();
 				}
 			}
@@ -147,7 +170,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	}
 
 	private void Log(String string, String string2) {
-		// TODO ©“®¶¬‚³‚ê‚½ƒƒ\ƒbƒhEƒXƒ^ƒu
+		// TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½\ï¿½bï¿½hï¿½Eï¿½Xï¿½^ï¿½u
 
 	}
 
