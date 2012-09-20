@@ -15,6 +15,11 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+/**
+ * メインアクティビティ
+ * @author Masaaki Horikawa
+ * 2012.9.19
+ */
 public class ShootingGameActivity extends Activity implements SurfaceHolder.Callback, Runnable, OnTouchListener{
     private SurfaceView surfaceview;
 	private SurfaceHolder holder;
@@ -24,195 +29,188 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	private MyPlane myplane;
 	private Enemy[] enemies;
 	private Bullet[] bullets;
+	private float sx,sy,dx,dy;
 
-    /** Called when the activity is first created. */
+	/**
+	 * コンストラクタ
+	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // ���C�A�E�g�t�@�C���ǂݍ���
+        //コンテンツヴュー初期化
         setContentView(R.layout.main);
-
-        // �Q�[����ʃI�u�W�F�N�g���쐬
+        
+        //サーフェイスヴュー関連初期化
         surfaceview = (SurfaceView)findViewById(R.id.GameView);
-
-        // �Q�[����ʊǗ��p�I�u�W�F�N�g���쐬
         holder = surfaceview.getHolder();
         holder.addCallback(this);
-
-        // �Q�[����ʂɑ΂��A�^�b�`�Z���T�[��L��ɂ���
         surfaceview.setOnTouchListener(this);
 
-        // �G�@�z��̏���
+        //各キャラクター用配列初期化
         enemies = new Enemy[3];
-        
         bullets = new Bullet[5];
-
+        
+        //ゲームをループさせるフラグ
         loop = true;
     }
 
+    /**
+     * メインスレッド
+     */
     public void run() {
-    /*## ���[�J���ϐ��̐錾 ##*/
-    	// �G��`�����߂̃L�����o�X�I�u�W�F�N�g
     	Canvas canvas;
-
-    	// �w�i�I�u�W�F�N�g�𐶐�
     	BackScreen backScreen  = new BackScreen(surfaceview.getResources());
-
-    	// �G��`�����߂̃y���𐶐�
 		Paint paint = new Paint(Color.BLACK);
-
-		// �s��v�Z�p�̔z��𐶐���������
 		float[] values = new float[9];
 		matrix.getValues(values);
-
-		// ���Ԍv���p�̕ϐ�
 		long st, ed,dist;
 
-	/*## �v���O���� ##*/
-		// ��l���@�̐���
+		//主人公機初期化
 		myplane = new MyPlane(BitmapFactory.decodeResource(surfaceview.getResources(), R.drawable.myplane));
 
-		// �G�@00�̐���
+		//敵機初期化
 		enemies[0] = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy00));
-
-		// �G�@01�̐���
 		enemies[1] = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy01));
-
-		// �G�@02�̐���
 		enemies[2]  = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy02));
 
+		//弾初期化
 		bullets[0] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 		bullets[1] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 		bullets[2] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 		bullets[3] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 		bullets[4] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 
-		// ��l���@�̔z�u
-//		myplane.move();
-
-		// �G�@�̔z�u�i�����_���j
+		//敵機の初期位置を確定
 		enemies[0].reset();
 		enemies[1].reset();
 		enemies[2].reset();
 
-		// �Q�[����ʕ`�揈��
+		//処理ルーチン
 		while(loop){
-			// �`��J�n���Ԃ�ۑ�
+			//処理開始時刻を記録
 			st = System.currentTimeMillis();
 
+			//主人公機が弾を撃つ
 			myplane.shoot(bullets);
-			
-			// ��l���@�E�G�@�̈ʒu���X�V
+
+			//主人公機が移動する
 			myplane.move();
+			
+			//弾が移動する
 			bullets[0].move();
 			bullets[1].move();
 			bullets[2].move();
 			bullets[3].move();
 			bullets[4].move();
 			
+			//敵が移動する
 			enemies[0].move();
 			enemies[1].move();
 			enemies[2].move();
 
-			// ���ʂ��擾
+			//描画開始
 			canvas = holder.lockCanvas();
 
-			// �F�̃y����I��
+			//前の画面を全部塗りつぶす
 			paint.setColor(Color.BLUE);
-
-			// �S���ʂ�œh��Ԃ�
 			canvas.drawRect(field, paint);
 
-			// ���@�̉�ʃT�C�Y�ɍ��킹�ė��ʂ�ό`
+			//拡大率を設定
 			canvas.concat(matrix);
-
-			// �w�i�摜��`�悷��
+			
+			//背景画面を描画
 			backScreen.drawBackScreen(canvas);
 
-			// ��l���@��`�悷��
+			//主人公機を描画
 			myplane.draw(canvas);
 			
+			//弾を描画
 			bullets[0].draw(canvas);
 			bullets[1].draw(canvas);
 			bullets[2].draw(canvas);
 			bullets[3].draw(canvas);
 			bullets[4].draw(canvas);
 			
-			// �G�@��`�悷��
+			//敵を描画
 			enemies[0].draw(canvas);
 			enemies[1].draw(canvas);
 			enemies[2].draw(canvas);
 
-			// �O�ʂƗ��ʂ���ւ���
+			//描画終了
 			holder.unlockCanvasAndPost(canvas);
 
-			// �`��I�����Ԃ�ۑ�
+			//処理終了時刻を記録
 			ed = System.currentTimeMillis();
 
-			// �`��ɂ����������Ԃ��v�Z
+			//タイミングを合わせる処理
 			dist = ed - st;
-
 			Log.d("DIST",""+dist);
-
-			// �`�掞�Ԃ�20�~���b��菭�Ȃ�������A�����҂�
 			if(dist < 20){
 				try {
-					// 1�^�[����20�~���b�ɂȂ�悤�ɑ҂����Ԃ𒲐�����
 					Thread.sleep(20-ed+st);
 				} catch (InterruptedException e) {
-					// TODO �����������ꂽ catch �u���b�N
 					e.printStackTrace();
 				}
 			}
+			
 		}
-
 	}
 
-	private void Log(String string, String string2) {
-		// TODO �����������ꂽ���\�b�h�E�X�^�u
-
-	}
-
+    /**
+     * 画面サイズが変更になった場合の処理
+     */
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
 		field = new Rect(0,0,width,height);
 		matrix = new Matrix();
-		float sx = 1.0f * width / 480;
-		float sy = 1.0f * height / 780;
+		sx = 1.0f * width / 480;
+		sy = 1.0f * height / 780;
 		float[] values = new float[9];
 		matrix.getValues(values);
 		if(sx<sy){
-			float dy = (height - sx*780)/2;
-			values[Matrix.MSCALE_X] = sx;
-			values[Matrix.MSCALE_Y] = sx;
-			values[Matrix.MTRANS_Y] = dy;
-			matrix.setValues(values);
+			dx = 0;
+			dy = (height - sx*780)/2;
+			sy = sx;
 		}else{
-			float dx = (width - sy*480)/2;
-			values[Matrix.MSCALE_X] = sy;
-			values[Matrix.MSCALE_Y] = sy;
-			values[Matrix.MTRANS_X] = dx;
-			matrix.setValues(values);
+			dx = (width - sy*480)/2;
+			dy = 0;
+			sx = sy;
 		}
+		values[Matrix.MSCALE_X] = sx;
+		values[Matrix.MSCALE_Y] = sy;
+		values[Matrix.MTRANS_X] = dx;
+		values[Matrix.MTRANS_Y] = dy;	
+		matrix.setValues(values);
 	}
 
+	/**
+	 * 画面が初期化された時の処理
+	 */
 	public void surfaceCreated(SurfaceHolder holder) {
 		Thread t = new Thread(this);
 		t.start();
 	}
 
+	/**
+	 * 画面が破棄された時の処理
+	 */
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		loop = false;
 	}
 
+	/**
+	 * 画面にタッチされた時の処理
+	 */
 	public boolean onTouch(View v, MotionEvent event) {
 		float x, y;
 
-		x = event.getX();
-		y = event.getY();
+		//タッチされたx座標,y座標から、主人公機の目的地を算出
+		x = (event.getX() - dx) / sx;
+		y = (event.getY() - dy) / sy;
 
+		//主人公機に目的地のx座標,y座標を与える
 		myplane.setPlace(x, y);
 
+		//継続的にタッチを感知するためにtrue
 		return true;
 	}
 }

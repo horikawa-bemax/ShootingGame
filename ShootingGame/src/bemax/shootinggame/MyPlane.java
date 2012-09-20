@@ -5,90 +5,119 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.util.Log;
 
-// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½Nï¿½ï¿½ï¿½X
+/**
+ * ålŒö‹@ƒNƒ‰ƒX
+ * @author Masaaki Horikawa
+ * 2012.9.19
+ */
 public class MyPlane extends Sprite {
-/*## ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½Ïï¿½ ##*/
-	// ï¿½vï¿½Zï¿½pï¿½Ì•Ïï¿½
 	private float px, py;
-	private int bno;
-	private long shoottime;
+	private int bno;						//Ÿ‚É”­Ë‚·‚é’e‚Ì”Ô†
+	private long shoottime;			//’e‚ğ”­Ë‚µ‚½
+	private final int MOVE = 20;		//ålŒö‹@‚ÌˆÚ“®—Ê
 
-	// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½ÌˆÚ“ï¿½ï¿½ï¿½(ï¿½è”)
-	private final int MOVE = 20;
-
-/*## ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^ ##*/
+	/**
+	 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 * @param img ålŒö‹@‚Ì‰æ‘œƒf[ƒ^
+	 */
 	public MyPlane(Bitmap img){
 		super();
-		// ï¿½æ‘œï¿½Ìï¿½ï¿½ï¿½
+		//‰æ‘œƒf[ƒ^‚ğİ’è
 		image = img;
 
-		// xï¿½ï¿½ï¿½Wï¿½Ìï¿½ï¿½ï¿½
+		//‰Šú’l‚ğİ’è
 		px  = x = 240 - image.getWidth()/2;
-
-		// yï¿½ï¿½ï¿½Wï¿½Ìï¿½ï¿½ï¿½
 		py = y = 280 - image.getHeight();
-
-		// ï¿½Ú“ï¿½ï¿½Ê‚Ìï¿½ï¿½ï¿½
 		dx = dy = 0;
 		
+		//Ÿ‚É”­Ë‚·‚é’e‚Ì”Ô†‚ğ‰Šú‰»
 		bno = 0;
 	}
 
-/*## ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½\ï¿½bï¿½h ##*/
-	// ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½
+	/**
+	 * ˆÚ“®‚·‚é
+	 */	
 	public void move() {
-		// ï¿½Oï¿½ï¿½ï¿½ï¿½Ì’è—ï¿½É‚ï¿½ï¿½Aï¿½ï¿½ï¿½nï¿½_ï¿½Æƒ^ï¿½bï¿½`ï¿½_ï¿½Ì‹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
+		//Œ»İ’n‚©‚ç–Ú“I’n‚Ü‚Å‚Ì‹——£‚ğŒvZ‚·‚é
 		float ddx = px - x;
 		float ddy = py - y;
-		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);
+		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);  // O•½•û‚Ì’è—‚ÅŒvZ
 
-		// ï¿½Ú“ï¿½ï¿½Ê‚ÌŒï¿½ï¿½ï¿½
+		//‹——£‚É‰‚¶‚ÄˆÚ“®—Ê‚ğŒˆ‚ß‚é
 		if(len >= MOVE){
+			//‹——£‚ªˆÚ“®—Ê‚æ‚è’·‚¢‚Æ‚«‚ÍAˆÚ“®—Ê•ª‚µ‚©“®‚©‚³‚È‚¢
 			dx = ddx * MOVE / len;
 			dy = ddy * MOVE / len;
 		}else{
+			//‹——£‚ªˆÚ“®—Ê‚æ‚è’Z‚¢‚Æ‚«‚ÍA–Ú“I’n‚Ü‚ÅˆÚ“®
 			dx = ddx;
 			dy = ddy;
 		}
 
-		// ï¿½Ú“ï¿½ï¿½ï¿½Ìï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//xÀ•W,yÀ•W‚ğXV
 		x += dx;
 		y += dy;
 
-		// ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
 		values[Matrix.MTRANS_X] = x;
 		values[Matrix.MTRANS_Y] = y;
 		matrix.setValues(values);
 	}
 
-	// ï¿½`ï¿½æ‚·ï¿½ï¿½
+	/**
+	 * •`‰æ‚·‚é
+	 */
+	@Override
 	public void draw(Canvas canvas) {
 		canvas.drawBitmap(image, matrix, null);
 	}
 
-	// xï¿½ï¿½ï¿½Wï¿½ï¿½Ô‚ï¿½
+	/**
+	 * xÀ•W‚ğ•Ô‚·
+	 * @return ålŒö‹@‚ÌxÀ•W
+	 */
 	public float getX(){
 		return x;
 	}
 
-	// yï¿½ï¿½ï¿½Wï¿½ï¿½Ô‚ï¿½
+	/**
+	 * yÀ•W‚ğ•Ô‚·
+	 * @return ålŒö‹@‚ÌyÀ•W
+	 */
 	public float getY(){
 		return y;
 	}
 
-	// ï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½ï¿½Apx,pyï¿½ğ‘ª’ï¿½
+	/**
+	 * –Ú“I’n‚ğİ’è‚·‚é
+	 * @param tx –Ú“I’n‚ÌxÀ•W
+	 * @param ty –Ú“I’n‚ÌyÀ•W
+	 */
 	public void setPlace(float tx, float ty){
 		px = tx - image.getWidth()/2;
 		py = ty - image.getHeight()/2;
 	}
 	
+	/**
+	 * ’e‚ğ”­Ë
+	 * @param b ’eƒIƒuƒWƒFƒNƒg
+	 */
 	public void shoot(Bullet[] b){
-		if(!b[bno].getFly() && System.currentTimeMillis()-shoottime > 200){
+		//‘O‰ñ’e‚ğŒ‚‚Á‚½‚©‚ç‚ÌŒo‰ßŠÔ‚ğZo‚·‚é
+		long interval = System.currentTimeMillis() - shoottime;
+		
+		//’e‚ğŒ‚‚Á‚Ä‚à‚æ‚¢ó‘Ô‚È‚ç‚ÎA’e‚ğŒ‚‚Â
+		if(b[bno].getReady() && interval > 200){
+			//’e‚ğ”­Ë‚³‚¹‚é
 			b[bno].shoot(x + image.getWidth()/2, y);
+			
+			//Ÿ‚Ì’e‚Ì”Ô†‚ÉƒŠƒZƒbƒg
 			bno++;
 			if (bno==5){
 				bno = 0;
 			}
+			
+			//’e‚ğ”­Ë‚µ‚½‚ğ‹L˜^
 			shoottime = System.currentTimeMillis();
 		}
 	}
