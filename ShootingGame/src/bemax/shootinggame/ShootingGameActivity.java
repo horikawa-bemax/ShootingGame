@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 /**
- * メインアクティビティ
+ * 繝｡繧､繝ｳ繧｢繧ｯ繝�ぅ繝薙ユ繧｣
  * @author Masaaki Horikawa
  * 2012.9.19
  */
@@ -32,30 +32,30 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	private float sx,sy,dx,dy;
 
 	/**
-	 * コンストラクタ
+	 * 繧ｳ繝ｳ繧ｹ繝医Λ繧ｯ繧ｿ
 	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //コンテンツヴュー初期化
+        //繧ｳ繝ｳ繝�Φ繝�Χ繝･繝ｼ蛻晄悄蛹�        
         setContentView(R.layout.main);
         
-        //サーフェイスヴュー関連初期化
+        //繧ｵ繝ｼ繝輔ぉ繧､繧ｹ繝ｴ繝･繝ｼ髢｢騾｣蛻晄悄蛹�        
         surfaceview = (SurfaceView)findViewById(R.id.GameView);
         holder = surfaceview.getHolder();
         holder.addCallback(this);
         surfaceview.setOnTouchListener(this);
 
-        //各キャラクター用配列初期化
+        //蜷�く繝｣繝ｩ繧ｯ繧ｿ繝ｼ逕ｨ驟榊�蛻晄悄蛹�        
         enemies = new Enemy[3];
         bullets = new Bullet[5];
         
-        //ゲームをループさせるフラグ
+        //繧ｲ繝ｼ繝�ｒ繝ｫ繝ｼ繝励＆縺帙ｋ繝輔Λ繧ｰ
         loop = true;
     }
 
     /**
-     * メインスレッド
+     * 繝｡繧､繝ｳ繧ｹ繝ｬ繝�ラ
      */
     public void run() {
     	Canvas canvas;
@@ -65,84 +65,84 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 		matrix.getValues(values);
 		long st, ed,dist;
 
-		//主人公機初期化
+		//荳ｻ莠ｺ蜈ｬ讖溷�譛溷喧
 		myplane = new MyPlane(BitmapFactory.decodeResource(surfaceview.getResources(), R.drawable.myplane));
 
-		//敵機初期化
+		//謨ｵ讖溷�譛溷喧
 		enemies[0] = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy00));
 		enemies[1] = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy01));
 		enemies[2]  = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy02));
 
-		//弾初期化
+		//蠑ｾ蛻晄悄蛹�		
 		bullets[0] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 		bullets[1] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 		bullets[2] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 		bullets[3] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 		bullets[4] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
 
-		//敵機の初期位置を確定
+		//謨ｵ讖溘�蛻晄悄菴咲ｽｮ繧堤｢ｺ螳�		
 		enemies[0].reset();
 		enemies[1].reset();
 		enemies[2].reset();
 
-		//処理ルーチン
+		//蜃ｦ逅�Ν繝ｼ繝√Φ
 		while(loop){
-			//処理開始時刻を記録
+			//蜃ｦ逅�幕蟋区凾蛻ｻ繧定ｨ倬鹸
 			st = System.currentTimeMillis();
 
-			//主人公機が弾を撃つ
+			//荳ｻ莠ｺ蜈ｬ讖溘′蠑ｾ繧呈茶縺､
 			myplane.shoot(bullets);
 
-			//主人公機が移動する
+			//荳ｻ莠ｺ蜈ｬ讖溘′遘ｻ蜍輔☆繧�
 			myplane.move();
 			
-			//弾が移動する
+			//蠑ｾ縺檎ｧｻ蜍輔☆繧�
 			bullets[0].move();
 			bullets[1].move();
 			bullets[2].move();
 			bullets[3].move();
 			bullets[4].move();
 			
-			//敵が移動する
+			//謨ｵ縺檎ｧｻ蜍輔☆繧�
 			enemies[0].move();
 			enemies[1].move();
 			enemies[2].move();
 
-			//描画開始
+			//謠冗判髢句ｧ�			
 			canvas = holder.lockCanvas();
 
-			//前の画面を全部塗りつぶす
+			//蜑阪�逕ｻ髱｢繧貞�驛ｨ蝪励ｊ縺､縺ｶ縺�	
 			paint.setColor(Color.BLUE);
 			canvas.drawRect(field, paint);
 
-			//拡大率を設定
+			//諡｡螟ｧ邇�ｒ險ｭ螳�
 			canvas.concat(matrix);
 			
-			//背景画面を描画
+			//閭梧勹逕ｻ髱｢繧呈緒逕ｻ
 			backScreen.drawBackScreen(canvas);
 
-			//主人公機を描画
+			//荳ｻ莠ｺ蜈ｬ讖溘ｒ謠冗判
 			myplane.draw(canvas);
 			
-			//弾を描画
+			//蠑ｾ繧呈緒逕ｻ
 			bullets[0].draw(canvas);
 			bullets[1].draw(canvas);
 			bullets[2].draw(canvas);
 			bullets[3].draw(canvas);
 			bullets[4].draw(canvas);
 			
-			//敵を描画
+			//謨ｵ繧呈緒逕ｻ
 			enemies[0].draw(canvas);
 			enemies[1].draw(canvas);
 			enemies[2].draw(canvas);
 
-			//描画終了
+			//謠冗判邨ゆｺ�
 			holder.unlockCanvasAndPost(canvas);
 
-			//処理終了時刻を記録
+			//蜃ｦ逅�ｵゆｺ�凾蛻ｻ繧定ｨ倬鹸
 			ed = System.currentTimeMillis();
 
-			//タイミングを合わせる処理
+			//繧ｿ繧､繝溘Φ繧ｰ繧貞粋繧上○繧句�逅�
 			dist = ed - st;
 			Log.d("DIST",""+dist);
 			if(dist < 20){
@@ -157,8 +157,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	}
 
     /**
-     * 画面サイズが変更になった場合の処理
-     */
+     * 逕ｻ髱｢繧ｵ繧､繧ｺ縺悟､画峩縺ｫ縺ｪ縺｣縺溷�蜷医�蜃ｦ逅�     */
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
 		field = new Rect(0,0,width,height);
 		matrix = new Matrix();
@@ -183,34 +182,31 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	}
 
 	/**
-	 * 画面が初期化された時の処理
-	 */
+	 * 逕ｻ髱｢縺悟�譛溷喧縺輔ｌ縺滓凾縺ｮ蜃ｦ逅�	 */
 	public void surfaceCreated(SurfaceHolder holder) {
 		Thread t = new Thread(this);
 		t.start();
 	}
 
 	/**
-	 * 画面が破棄された時の処理
-	 */
+	 * 逕ｻ髱｢縺檎�譽�＆繧後◆譎ゅ�蜃ｦ逅�	 */
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		loop = false;
 	}
 
 	/**
-	 * 画面にタッチされた時の処理
-	 */
+	 * 逕ｻ髱｢縺ｫ繧ｿ繝�メ縺輔ｌ縺滓凾縺ｮ蜃ｦ逅�	 */
 	public boolean onTouch(View v, MotionEvent event) {
 		float x, y;
 
-		//タッチされたx座標,y座標から、主人公機の目的地を算出
+		//繧ｿ繝�メ縺輔ｌ縺毋蠎ｧ讓�y蠎ｧ讓吶°繧峨�荳ｻ莠ｺ蜈ｬ讖溘�逶ｮ逧�慍繧堤ｮ怜�
 		x = (event.getX() - dx) / sx;
 		y = (event.getY() - dy) / sy;
 
-		//主人公機に目的地のx座標,y座標を与える
+		//荳ｻ莠ｺ蜈ｬ讖溘↓逶ｮ逧�慍縺ｮx蠎ｧ讓�y蠎ｧ讓吶ｒ荳弱∴繧�		
 		myplane.setPlace(x, y);
 
-		//継続的にタッチを感知するためにtrue
+		//邯咏ｶ夂噪縺ｫ繧ｿ繝�メ繧呈─遏･縺吶ｋ縺溘ａ縺ｫtrue
 		return true;
 	}
 }

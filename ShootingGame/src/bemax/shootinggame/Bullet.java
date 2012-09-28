@@ -13,6 +13,7 @@ public class Bullet extends Sprite {
 	
 	public Bullet(Bitmap img){
 		image = img;
+		makeShadow();
 		dx = 0;
 		dy = 0;
 		ready = true;

@@ -6,66 +6,67 @@ import android.graphics.Matrix;
 import android.util.Log;
 
 /**
- * ŽålŒö‹@ƒNƒ‰ƒX
+ * ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½Nï¿½ï¿½ï¿½X
  * @author Masaaki Horikawa
  * 2012.9.19
  */
 public class MyPlane extends Sprite {
 	private float px, py;
-	private int bno;						//ŽŸ‚É”­ŽË‚·‚é’e‚Ì”Ô†
-	private long shoottime;			//’e‚ð”­ŽË‚µ‚½Žž
-	private final int MOVE = 20;		//ŽålŒö‹@‚ÌˆÚ“®—Ê
+	private int bno;						//ï¿½ï¿½ï¿½É”ï¿½ï¿½Ë‚ï¿½ï¿½ï¿½eï¿½Ì”Ôï¿½
+	private long shoottime;			//ï¿½eï¿½ð”­ŽË‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	private final int MOVE = 20;		//ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½ÌˆÚ“ï¿½ï¿½ï¿½
 
 	/**
-	 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	 * @param img ŽålŒö‹@‚Ì‰æ‘œƒf[ƒ^
+	 * ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
+	 * @param img ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½Ì‰æ‘œï¿½fï¿½[ï¿½^
 	 */
 	public MyPlane(Bitmap img){
 		super();
-		//‰æ‘œƒf[ƒ^‚ðÝ’è
+		//ï¿½æ‘œï¿½fï¿½[ï¿½^ï¿½ï¿½Ý’ï¿½
 		image = img;
+		makeShadow();
 
-		//‰Šú’l‚ðÝ’è
+		//ï¿½ï¿½ï¿½ï¿½lï¿½ï¿½Ý’ï¿½
 		px  = x = 240 - image.getWidth()/2;
 		py = y = 280 - image.getHeight();
 		dx = dy = 0;
 		
-		//ŽŸ‚É”­ŽË‚·‚é’e‚Ì”Ô†‚ð‰Šú‰»
+		//ï¿½ï¿½ï¿½É”ï¿½ï¿½Ë‚ï¿½ï¿½ï¿½eï¿½Ì”Ôï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		bno = 0;
 	}
 
 	/**
-	 * ˆÚ“®‚·‚é
+	 * ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */	
 	public void move() {
-		//Œ»Ý’n‚©‚ç–Ú“I’n‚Ü‚Å‚Ì‹——£‚ðŒvŽZ‚·‚é
+		//ï¿½ï¿½ï¿½Ý’nï¿½ï¿½ï¿½ï¿½Ú“Iï¿½nï¿½Ü‚Å‚Ì‹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 		float ddx = px - x;
 		float ddy = py - y;
-		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);  // ŽO•½•û‚Ì’è—‚ÅŒvŽZ
+		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);  // ï¿½Oï¿½ï¿½ï¿½ï¿½Ì’è—ï¿½ÅŒvï¿½Z
 
-		//‹——£‚É‰ž‚¶‚ÄˆÚ“®—Ê‚ðŒˆ‚ß‚é
+		//ï¿½ï¿½ï¿½ï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½ÄˆÚ“ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
 		if(len >= MOVE){
-			//‹——£‚ªˆÚ“®—Ê‚æ‚è’·‚¢‚Æ‚«‚ÍAˆÚ“®—Ê•ª‚µ‚©“®‚©‚³‚È‚¢
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú“ï¿½ï¿½Ê‚ï¿½è’·ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ÍAï¿½Ú“ï¿½ï¿½Ê•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
 			dx = ddx * MOVE / len;
 			dy = ddy * MOVE / len;
 		}else{
-			//‹——£‚ªˆÚ“®—Ê‚æ‚è’Z‚¢‚Æ‚«‚ÍA–Ú“I’n‚Ü‚ÅˆÚ“®
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú“ï¿½ï¿½Ê‚ï¿½ï¿½Zï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ÍAï¿½Ú“Iï¿½nï¿½Ü‚ÅˆÚ“ï¿½
 			dx = ddx;
 			dy = ddy;
 		}
 
-		//xÀ•W,yÀ•W‚ðXV
+		//xï¿½ï¿½ï¿½W,yï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½Xï¿½V
 		x += dx;
 		y += dy;
 
-		// ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+		// ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½tï¿½Hï¿½[ï¿½ï¿½
 		values[Matrix.MTRANS_X] = x;
 		values[Matrix.MTRANS_Y] = y;
 		matrix.setValues(values);
 	}
 
 	/**
-	 * •`‰æ‚·‚é
+	 * ï¿½`ï¿½æ‚·ï¿½ï¿½
 	 */
 	@Override
 	public void draw(Canvas canvas) {
@@ -73,25 +74,25 @@ public class MyPlane extends Sprite {
 	}
 
 	/**
-	 * xÀ•W‚ð•Ô‚·
-	 * @return ŽålŒö‹@‚ÌxÀ•W
+	 * xï¿½ï¿½ï¿½Wï¿½ï¿½Ô‚ï¿½
+	 * @return ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½ï¿½xï¿½ï¿½ï¿½W
 	 */
 	public float getX(){
 		return x;
 	}
 
 	/**
-	 * yÀ•W‚ð•Ô‚·
-	 * @return ŽålŒö‹@‚ÌyÀ•W
+	 * yï¿½ï¿½ï¿½Wï¿½ï¿½Ô‚ï¿½
+	 * @return ï¿½ï¿½lï¿½ï¿½ï¿½@ï¿½ï¿½yï¿½ï¿½ï¿½W
 	 */
 	public float getY(){
 		return y;
 	}
 
 	/**
-	 * –Ú“I’n‚ðÝ’è‚·‚é
-	 * @param tx –Ú“I’n‚ÌxÀ•W
-	 * @param ty –Ú“I’n‚ÌyÀ•W
+	 * ï¿½Ú“Iï¿½nï¿½ï¿½Ý’è‚·ï¿½ï¿½
+	 * @param tx ï¿½Ú“Iï¿½nï¿½ï¿½xï¿½ï¿½ï¿½W
+	 * @param ty ï¿½Ú“Iï¿½nï¿½ï¿½yï¿½ï¿½ï¿½W
 	 */
 	public void setPlace(float tx, float ty){
 		px = tx - image.getWidth()/2;
@@ -99,25 +100,25 @@ public class MyPlane extends Sprite {
 	}
 	
 	/**
-	 * ’e‚ð”­ŽË
-	 * @param b ’eƒIƒuƒWƒFƒNƒg
+	 * ï¿½eï¿½ð”­Žï¿½
+	 * @param b ï¿½eï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
 	 */
 	public void shoot(Bullet[] b){
-		//‘O‰ñ’e‚ðŒ‚‚Á‚½Žž‚©‚ç‚ÌŒo‰ßŽžŠÔ‚ðŽZo‚·‚é
+		//ï¿½Oï¿½ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌŒoï¿½ßŽï¿½ï¿½Ô‚ï¿½ï¿½Zï¿½oï¿½ï¿½ï¿½ï¿½
 		long interval = System.currentTimeMillis() - shoottime;
 		
-		//’e‚ðŒ‚‚Á‚Ä‚à‚æ‚¢ó‘Ô‚È‚ç‚ÎA’e‚ðŒ‚‚Â
+		//ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½æ‚¢ï¿½ï¿½Ô‚È‚ï¿½ÎAï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if(b[bno].getReady() && interval > 200){
-			//’e‚ð”­ŽË‚³‚¹‚é
+			//ï¿½eï¿½ð”­ŽË‚ï¿½ï¿½ï¿½ï¿½ï¿½
 			b[bno].shoot(x + image.getWidth()/2, y);
 			
-			//ŽŸ‚Ì’e‚Ì”Ô†‚ÉƒŠƒZƒbƒg
+			//ï¿½ï¿½ï¿½Ì’eï¿½Ì”Ôï¿½ï¿½Éƒï¿½ï¿½Zï¿½bï¿½g
 			bno++;
 			if (bno==5){
 				bno = 0;
 			}
 			
-			//’e‚ð”­ŽË‚µ‚½Žž‚ð‹L˜^
+			//ï¿½eï¿½ð”­ŽË‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½^
 			shoottime = System.currentTimeMillis();
 		}
 	}

@@ -8,21 +8,22 @@ public class Enemy00 extends Enemy{
 
 	public Enemy00(Bitmap img) {
 		super();
-		// 敵機の画像データ
-		image = img;
 
-		// 倒した時の得点
+		image = img;
 		point = 10;
+		makeShadow();
 	}
 
-	// 敵機を移動させる
+	/**
+	 * 蜍輔￥
+	 */
 	@Override
 	public void move() {
-		// 敵機の座標を更新
+		// 蠎ｧ讓呎峩譁ｰ
 		x +=  dx;
 		y += dy;
 
-		// 左または右からはみ出ようとすると反射する
+		// 讓ｪ螢√〒霍ｳ縺ｭ霑斐ｋ
 		if(x<0){
 			x = 0;
 			dx = -dx;
@@ -31,37 +32,36 @@ public class Enemy00 extends Enemy{
 			dx = -dx;
 		}
 
-		// 敵機を移動
+		// 繝医Λ繝ｳ繧ｹ繝輔か繝ｼ繝
 		matrix.setTranslate(x, y);
 
-		// 下からはみ出したら、リセットする
+		// 逕ｻ髱｢縺九ｉ豸亥､ｱ
 		if(y > 800){
 			reset();
 		}
 	}
 
-	// 敵機をキャンバスに描画する
+	/**
+	 * 謠上￥
+	 */
 	public void draw(Canvas canvas) {
 		canvas.drawBitmap(image, matrix, null);
 	}
 
-	// 主人公機をターゲットにした敵機の移動
+	/**
+	 * 蜍輔￥
+	 */
 	public void move(MyPlane mp){
 		move();
 	}
 
-	// 敵機をスタート位置にリセットする
+	/**
+	 * 蛻晄悄菴咲ｽｮ縺ｮ繝ｪ繧ｻ繝�繝�
+	 */
 	public void reset(){
-		// 敵機の初期y座標
 		y = -image.getHeight() * 2;
-
-		// 敵機の初期x座標
 		x = rand.nextFloat() * (480-image.getWidth());
-
-		// 敵機のx軸方向への初期増分
 		dx = 0;
-
-		// 敵機のy軸方向への初期増分
 		dy = rand.nextFloat() * 10 + 5; //=>5.0 ~ 14.999
 	}
 }

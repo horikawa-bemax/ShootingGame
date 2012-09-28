@@ -2,11 +2,12 @@ package bemax.shootinggame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 
 /**
- * ƒXƒvƒ‰ƒCƒgi—d¸‚³‚ñjƒNƒ‰ƒX
- * @author Masaaki.horikawa
+ * ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚¯ãƒ©ã‚¹
+ * @author Masaaki horikawa
  * 2012.9.13
  */
 public abstract class Sprite {
@@ -14,17 +15,18 @@ public abstract class Sprite {
 	protected float[] values;
 	protected float x, y, dx, dy;
 	protected Bitmap image;
+	protected boolean[][] shadow;
 
 	/**
-	 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	 */
 	public Sprite(){
-		// matrix‚Ì‰Šú‰»
+		// matrixåˆæœŸåŒ–
 		matrix = new Matrix();
 		values = new float[9];
 		matrix.getValues(values);
 
-		// xÀ•WAyÀ•WAx‘•ªAy‘•ª‚Ì‰Šú‰»
+		// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿åˆæœŸåŒ–
 		x = 0;
 		y = -80;
 		dx = 0;
@@ -32,13 +34,34 @@ public abstract class Sprite {
 	}
 
 	/**
-	 * ‰æ–Ê‚É•`‰æ‚·‚é
-	 * @param canvas •`‰æ‚·‚é‰æ–ÊƒIƒuƒWƒFƒNƒg
+	 * æã
+	 * @param canvas æç”»ã‚’ã™ã‚‹ã‚­ãƒ£ãƒ³ãƒ‘ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	 */
 	public abstract void draw(Canvas canvas);
 
 	/**
-	 * ˆÚ“®‚·‚é
+	 * å‹•ã
 	 */
 	public abstract void move();
+	
+	public void makeShadow(){
+		shadow = new boolean[image.getHeight()][image.getWidth()];
+		int[] pixels = new int[image.getWidth()*image.getHeight()];
+		image.getPixels(pixels, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
+		for(int i=0; i<shadow.length; i++){
+			for(int j=0; j<shadow[i].length;j++){
+				int pixcel = pixels[j+i*image.getWidth()];
+				if(Color.alpha(pixcel)==0){
+					shadow[j][i] = false;
+					pixels[j+i*image.getWidth()] = Color.WHITE;
+				}else{
+					shadow[j][i] = true;
+					pixels[j+i*image.getWidth()] = Color.BLACK;
+				}
+			}
+		}
+		Bitmap dummy = image.copy(Bitmap.Config.ARGB_8888, true);
+		dummy.setPixels(pixels, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
+		image = dummy;
+	}
 }

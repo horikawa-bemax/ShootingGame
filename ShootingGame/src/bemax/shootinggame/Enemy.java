@@ -2,27 +2,40 @@ package bemax.shootinggame;
 
 import java.util.Random;
 
-// “G‹@‚Ì’ŠÛƒNƒ‰ƒX
+/**
+ * æ•µã‚¯ãƒ©ã‚¹
+ * @author Masaaki Horikawa
+ *
+ */
 public abstract class Enemy extends Sprite{
-	protected int point;			// Œ‚”j‚µ‚½‚Æ‚«‚É“ü‚é“¾“_
-	protected Random rand;	// —””­¶—p•Ï”
+	protected int point;	// å¾—ç‚¹
+	protected Random rand;	// ä¹±æ•°
 
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	/**
+	 * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	 */
 	public Enemy(){
 		super();
 
-		// V‚µ‚¢ƒ‰ƒ“ƒ_ƒ€ƒIƒuƒWƒFƒNƒg‚ğ¶¬
+		// ä¹±æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 		rand = new Random();
 	}
 
-	// ålŒö‹@‚ğ‘_‚Á‚½ˆÚ“®‚ğ‚·‚é
+	/**
+	 * ä¸»äººå…¬æ©Ÿã«ã‚ã‚ã›ã¦å‹•ã
+	 * @param mp ä¸»äººå…¬æ©Ÿ
+	 */
 	public abstract void move(MyPlane mp);
 
-	// ˆÚ“®‚ğ‚·‚é
+	/**
+	 * å‹•ã
+	 */
 	@Override
 	public abstract void move();
 
-	// ‰ŠúˆÊ’u‚É–ß‚é
+	/**
+	 * ä½ç½®æƒ…å ±ãƒªã‚»ãƒƒãƒˆ
+	 */
 	public void reset(){
 		y = -image.getHeight() * 2;
 		x = rand.nextFloat() * (480-image.getWidth());
