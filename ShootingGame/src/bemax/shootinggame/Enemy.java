@@ -2,6 +2,8 @@ package bemax.shootinggame;
 
 import java.util.Random;
 
+import android.graphics.Bitmap;
+
 /**
  * 敵クラス
  * @author Masaaki Horikawa
@@ -14,8 +16,8 @@ public abstract class Enemy extends Sprite{
 	/**
 	 * コンストラクタ
 	 */
-	public Enemy(){
-		super();
+	public Enemy(Bitmap img){
+		super(img);
 
 		// 乱数オブジェクト生成
 		rand = new Random();

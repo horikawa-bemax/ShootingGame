@@ -9,8 +9,8 @@ public class Enemy03 extends Enemy{
 	double d;
 
 	public Enemy03(Bitmap img) {
-		super();
-		image = img;
+		super(img);
+
 		point = 10;
 		px = 0;
 		py = 0;

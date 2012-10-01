@@ -9,8 +9,8 @@ public class Enemy02 extends Enemy {
 	private int alp;
 
 	public Enemy02(Bitmap img) {
-		super();
-		image = img;
+		super(img);
+
 		point = 30;
 		alp = 128;
 		paint = new Paint();

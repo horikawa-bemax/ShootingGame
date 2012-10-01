@@ -7,8 +7,8 @@ import android.util.Log;
 public class Enemy01 extends Enemy {
 
 	public Enemy01(Bitmap img){
-		super();
-		image = img;
+		super(img);
+
 		point = 20;
 	}
 
@@ -38,7 +38,6 @@ public class Enemy01 extends Enemy {
 
 	@Override
 	public void move() {
-		// TODO 自動生成されたメソッド・スタブ
 
 	}
 

@@ -7,9 +7,8 @@ import android.graphics.Matrix;
 public class Enemy00 extends Enemy{
 
 	public Enemy00(Bitmap img) {
-		super();
+		super(img);
 
-		image = img;
 		point = 10;
 		makeShadow();
 	}

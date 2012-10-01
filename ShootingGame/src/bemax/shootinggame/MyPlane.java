@@ -3,70 +3,63 @@ package bemax.shootinggame;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.util.Log;
 
 /**
- * ��l���@�N���X
+ * 主人公機
  * @author Masaaki Horikawa
  * 2012.9.19
  */
 public class MyPlane extends Sprite {
 	private float px, py;
-	private int bno;						//���ɔ��˂���e�̔ԍ�
-	private long shoottime;			//�e�𔭎˂�������
-	private final int MOVE = 20;		//��l���@�̈ړ���
+	private int bno;						// 弾番号
+	private long shoottime;			// 弾を撃った時間
+	private final int MOVE = 20;	// 移動量
 
 	/**
-	 * �R���X�g���N�^
-	 * @param img ��l���@�̉摜�f�[�^
+	 * コンストラクタ
+	 * @param img 主人公機のビットマップデータ
 	 */
 	public MyPlane(Bitmap img){
-		super();
-		//�摜�f�[�^��ݒ�
-		image = img;
-		makeShadow();
+		super(img);
 
-		//����l��ݒ�
+		// 位置の初期化
 		px  = x = 240 - image.getWidth()/2;
 		py = y = 280 - image.getHeight();
 		dx = dy = 0;
-		
-		//���ɔ��˂���e�̔ԍ�������
+
+		// 弾番号の初期化
 		bno = 0;
 	}
 
 	/**
-	 * �ړ�����
-	 */	
+	 * 動く
+	 */
 	public void move() {
-		//���ݒn����ړI�n�܂ł̋������v�Z����
+		// 目標地点との距離を算出
 		float ddx = px - x;
 		float ddy = py - y;
-		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);  // �O����̒藝�Ōv�Z
+		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);
 
-		//�����ɉ����Ĉړ��ʂ����߂�
+		// 移動先座標を算出
 		if(len >= MOVE){
-			//�������ړ��ʂ�蒷���Ƃ��́A�ړ��ʕ������������Ȃ�
 			dx = ddx * MOVE / len;
 			dy = ddy * MOVE / len;
 		}else{
-			//�������ړ��ʂ��Z���Ƃ��́A�ړI�n�܂ňړ�
 			dx = ddx;
 			dy = ddy;
 		}
 
-		//x���W,y���W���X�V
 		x += dx;
 		y += dy;
 
-		// �g�����X�t�H�[��
+		// マトリックス
 		values[Matrix.MTRANS_X] = x;
 		values[Matrix.MTRANS_Y] = y;
 		matrix.setValues(values);
 	}
 
 	/**
-	 * �`�悷��
+	 * 描画する
 	 */
 	@Override
 	public void draw(Canvas canvas) {
@@ -74,51 +67,35 @@ public class MyPlane extends Sprite {
 	}
 
 	/**
-	 * x���W��Ԃ�
-	 * @return ��l���@��x���W
-	 */
-	public float getX(){
-		return x;
-	}
-
-	/**
-	 * y���W��Ԃ�
-	 * @return ��l���@��y���W
-	 */
-	public float getY(){
-		return y;
-	}
-
-	/**
-	 * �ړI�n��ݒ肷��
-	 * @param tx �ړI�n��x���W
-	 * @param ty �ړI�n��y���W
+	 * 目的地をセットする
+	 * @param tx 目的地のx座標
+	 * @param ty 目的地のy座標
 	 */
 	public void setPlace(float tx, float ty){
 		px = tx - image.getWidth()/2;
 		py = ty - image.getHeight()/2;
 	}
-	
+
 	/**
-	 * �e�𔭎�
-	 * @param b �e�I�u�W�F�N�g
+	 * 弾を撃つ
+	 * @param b 弾
 	 */
 	public void shoot(Bullet[] b){
-		//�O��e����������������̌o�ߎ��Ԃ��Z�o����
+		// 前に弾を撃ったときとの時差を計測
 		long interval = System.currentTimeMillis() - shoottime;
-		
-		//�e�������Ă��悢��ԂȂ�΁A�e������
+
+		// 弾をうつ条件が整ったら
 		if(b[bno].getReady() && interval > 200){
-			//�e�𔭎˂�����
+			// 弾を撃つ
 			b[bno].shoot(x + image.getWidth()/2, y);
-			
-			//���̒e�̔ԍ��Ƀ��Z�b�g
+
+			// 次の弾の準備
 			bno++;
 			if (bno==5){
 				bno = 0;
 			}
-			
-			//�e�𔭎˂����������L�^
+
+			// 弾を撃った時刻を記録
 			shoottime = System.currentTimeMillis();
 		}
 	}
