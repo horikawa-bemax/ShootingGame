@@ -28,11 +28,6 @@ public class Enemy02 extends Enemy {
 	}
 
 	@Override
-	public void move(MyPlane mp) {
-
-	}
-
-	@Override
 	public void draw(Canvas canvas) {
 		canvas.drawBitmap(image, matrix, paint);
 

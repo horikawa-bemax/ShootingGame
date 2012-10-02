@@ -46,7 +46,9 @@ public abstract class Enemy extends Sprite{
 	 * 主人公機にあわせて動く
 	 * @param mp 主人公機
 	 */
-	public abstract void move(MyPlane mp);
+	public void move(MyPlane mp){
+		move();
+	}
 
 	/**
 	 * 動く
@@ -59,8 +61,8 @@ public abstract class Enemy extends Sprite{
 	 */
 	public void reset(){
 		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
-		dx = rand.nextInt(5) + 3;
-		dy = rand.nextInt(5) + 5;
+		dx = rand.nextInt(10) - 20;
+		dy = rand.nextInt(10) + 5;
 	}
 
 	public void draw(Canvas canvas){
@@ -77,5 +79,10 @@ public abstract class Enemy extends Sprite{
 
 	public void setState(byte s){
 		state = s;
+	}
+
+	protected int damage(){
+		hp--;
+		return hp;
 	}
 }

@@ -1,13 +1,10 @@
 package bemax.shootinggame;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.util.Log;
 
 public class Enemy00 extends Enemy{
+	private final int HP = 3;
 
 	public Enemy00(Resources r) {
 		super(r);
@@ -17,7 +14,7 @@ public class Enemy00 extends Enemy{
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth, imgHeight);
 
-		hp = 3;
+		hp = HP;
 		point = 10;
 
 		reset();
@@ -40,20 +37,19 @@ public class Enemy00 extends Enemy{
 				rect.offsetTo(480-imgWidth, rect.top);
 				dx = -dx;
 			}
+
+			matrix.setTranslate(getX(), getY());
 			// 画面から消失
 			if(rect.top > 800){
 				reset();
 			}
-			matrix.setTranslate(getX(), getY());
-			Log.d("x=",""+getX());
-			Log.d("y=",""+getY());
-
 			break;
 		case DEAD:
 			deadcount--;
 			if(deadcount==0){
 				state = HIDE;
 				deadcount = 10;
+				hp = HP;
 				reset();
 				matrix.setTranslate(getX(), getY());
 			}
@@ -67,10 +63,4 @@ public class Enemy00 extends Enemy{
 		}
 	}
 
-	/**
-	 * 動く
-	 */
-	public void move(MyPlane mp){
-		move();
-	}
 }

@@ -72,8 +72,8 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 
 		// 敵を初期化
 		enemies[0] = new Enemy00(res);
-		enemies[1] = new Enemy01(res);
-		enemies[2] = new Enemy03(res);
+		enemies[1] = new Enemy00(res);
+		enemies[2] = new Enemy00(res);
 
 		// 弾を初期化
 		for(int i=0; i<bullets.length; i++){
@@ -113,7 +113,9 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			for(int i=0; i<bullets.length; i++){
 				for(int j=0; j<enemies.length; j++){
 					if(!bullets[i].getReady() && enemies[j].state==Enemy.LIVE && bullets[i].hit(enemies[j])){
-						enemies[j].setState(Enemy.DEAD);
+						if(enemies[j].damage()<=0){
+							enemies[j].setState(Enemy.DEAD);
+						}
 						bullets[i].reset();
 					}
 				}
