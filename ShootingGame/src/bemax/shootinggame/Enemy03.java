@@ -1,20 +1,30 @@
 package bemax.shootinggame;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 
 public class Enemy03 extends Enemy{
-	private float px, py, deg;
-	double d;
+	private int px, py, len;
+	private float deg;
 
-	public Enemy03(Bitmap img) {
-		super(img);
+	public Enemy03(Resources r) {
+		super(r);
+		image = setImage(R.drawable.enemy00);
+		shadow = getShadow(image);
+		imgWidth = image.getWidth();
+		imgHeight = image.getHeight();
+		rect = new Rect(0,0,imgWidth, imgHeight);
 
-		point = 10;
+		hp = 3;
+		point = 40;
+
 		px = 0;
 		py = 0;
 		deg = 0;
+		len = 20;
 	}
 
 	@Override
@@ -23,24 +33,23 @@ public class Enemy03 extends Enemy{
 		if(deg>360){
 			deg = deg%360;
 		}
-		d = deg*180/Math.PI;
-		px = (float)Math.cos(d);
-		py = (float)Math.sin(d);
+		double d = deg*180/Math.PI;
+		int lx = (int)(Math.cos(d)*len);
+		int ly = (int)(Math.sin(d)*len);
 
-		x +=  dx;
-		y += dy;
+		rect.offset(dx, dy);
 
-		if(x<0){
-			x = 0;
+		if(rect.left < 0){
+			rect.offsetTo(0, rect.top);
 			dx = -dx;
-		}else if(x > 480-image.getWidth()){
-			x = 480 - image.getWidth();
+		}else if(rect.right > 480){
+			rect.offsetTo(480-imgWidth, rect.top);
 			dx = -dx;
 		}
 
-		matrix.setTranslate(x + px * 60, y + py * 60);
+		matrix.setTranslate(getX()+lx, getY()+ly);
 
-		if(y > 860){
+		if(rect.top > 800){
 			reset();
 		}
 	}
@@ -53,4 +62,9 @@ public class Enemy03 extends Enemy{
 		move();
 	}
 
+	public void reset(){
+		px = rand.nextInt() * (480 - imgWidth);
+		py = rand.nextInt() - imgHeight;
+		deg = 0;
+	}
 }

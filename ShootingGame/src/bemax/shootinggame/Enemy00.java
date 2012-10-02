@@ -1,16 +1,26 @@
 package bemax.shootinggame;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.util.Log;
 
 public class Enemy00 extends Enemy{
 
-	public Enemy00(Bitmap img) {
-		super(img);
+	public Enemy00(Resources r) {
+		super(r);
+		image = setImage(R.drawable.enemy00);
+		shadow = getShadow(image);
+		imgWidth = image.getWidth();
+		imgHeight = image.getHeight();
+		rect = new Rect(0,0,imgWidth, imgHeight);
 
+		hp = 3;
 		point = 10;
-		makeShadow();
+
+		reset();
 	}
 
 	/**
@@ -18,33 +28,43 @@ public class Enemy00 extends Enemy{
 	 */
 	@Override
 	public void move() {
-		// 座標更新
-		x +=  dx;
-		y += dy;
+		switch(state){
+		case LIVE:
+			// 座標更新
+			rect.offset(dx, dy);
+			// 横壁で跳ね返る
+			if(rect.left < 0){
+				rect.offsetTo(0, rect.top);
+				dx = -dx;
+			}else if(rect.right > 480){
+				rect.offsetTo(480-imgWidth, rect.top);
+				dx = -dx;
+			}
+			// 画面から消失
+			if(rect.top > 800){
+				reset();
+			}
+			matrix.setTranslate(getX(), getY());
+			Log.d("x=",""+getX());
+			Log.d("y=",""+getY());
 
-		// 横壁で跳ね返る
-		if(x<0){
-			x = 0;
-			dx = -dx;
-		}else if(x > 480-image.getWidth()){
-			x = 480 - image.getWidth();
-			dx = -dx;
+			break;
+		case DEAD:
+			deadcount--;
+			if(deadcount==0){
+				state = HIDE;
+				deadcount = 10;
+				reset();
+				matrix.setTranslate(getX(), getY());
+			}
+			break;
+		case HIDE:
+			hidecount--;
+			if(hidecount==0){
+				state = LIVE;
+				hidecount = 10;
+			}
 		}
-
-		// トランスフォーム
-		matrix.setTranslate(x, y);
-
-		// 画面から消失
-		if(y > 800){
-			reset();
-		}
-	}
-
-	/**
-	 * 描く
-	 */
-	public void draw(Canvas canvas) {
-		canvas.drawBitmap(image, matrix, null);
 	}
 
 	/**
@@ -52,15 +72,5 @@ public class Enemy00 extends Enemy{
 	 */
 	public void move(MyPlane mp){
 		move();
-	}
-
-	/**
-	 * 初期位置のリセット
-	 */
-	public void reset(){
-		y = -image.getHeight() * 2;
-		x = rand.nextFloat() * (480-image.getWidth());
-		dx = 0;
-		dy = rand.nextFloat() * 10 + 5; //=>5.0 ~ 14.999
 	}
 }

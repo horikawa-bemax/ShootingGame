@@ -1,33 +1,62 @@
 package bemax.shootinggame;
 
-import android.graphics.Bitmap;
+import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.util.Log;
+import android.graphics.Rect;
 
 public class Enemy01 extends Enemy {
 
-	public Enemy01(Bitmap img){
-		super(img);
+	public Enemy01(Resources r){
+		super(r);
+		image = setImage(R.drawable.enemy01);
+		shadow = getShadow(image);
+		imgWidth = image.getWidth();
+		imgHeight = image.getHeight();
+		rect = new Rect(0,0,imgWidth,imgHeight);
 
+		hp = 3;
 		point = 20;
+
+		deadcount = 10;
+		hidecount = 10;
+
+		reset();
 	}
 
 	@Override
 	public void move(MyPlane mp) {
-		if(mp.getX() < x){
-			dx = x-mp.getX()>5?-5:mp.getX()-x;
-		}else if(mp.getX() > x){
-			dx = mp.getX()-x>5?5:mp.getX()-x;
-		}else{
-			dx = 0;
-		}
-		x += dx;
-		y += dy;
+		switch(state){
+		case LIVE:
+			if(mp.getX() < getX()){
+				dx = getX() - mp.getX() > 5 ? -5 : mp.getX() - getX();
+			}else if(mp.getX() > getX()){
+				dx = mp.getX() - getX() > 5 ? 5 : mp.getX() - getX();
+			}else{
+				dx = 0;
+			}
+			rect.offset(dx, dy);
 
-		matrix.setTranslate(x, y);
+			if(rect.top > 800){
+				reset();
+			}
 
-		if(y>780){
-			reset();
+			matrix.setTranslate(getX(), getY());
+			break;
+		case DEAD:
+			deadcount--;
+			if(deadcount==0){
+				state = HIDE;
+				deadcount = 10;
+				reset();
+				matrix.setTranslate(getX(), getY());
+			}
+			break;
+		case HIDE:
+			hidecount--;
+			if(hidecount==0){
+				state = LIVE;
+				hidecount = 10;
+			}
 		}
 	}
 
@@ -41,4 +70,9 @@ public class Enemy01 extends Enemy {
 
 	}
 
+	public void reset(){
+		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
+		dx = 0;
+		dy = rand.nextInt(25);
+	}
 }

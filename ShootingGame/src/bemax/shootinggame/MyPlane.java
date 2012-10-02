@@ -1,8 +1,11 @@
 package bemax.shootinggame;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 
 /**
  * 主人公機
@@ -10,7 +13,7 @@ import android.graphics.Matrix;
  * 2012.9.19
  */
 public class MyPlane extends Sprite {
-	private float px, py;
+	private int tx, ty;
 	private int bno;						// 弾番号
 	private long shoottime;			// 弾を撃った時間
 	private final int MOVE = 20;	// 移動量
@@ -19,12 +22,18 @@ public class MyPlane extends Sprite {
 	 * コンストラクタ
 	 * @param img 主人公機のビットマップデータ
 	 */
-	public MyPlane(Bitmap img){
-		super(img);
+	public MyPlane(Resources r){
+		super(r);
+		image = BitmapFactory.decodeResource(res, R.drawable.myplane);
+		shadow = getShadow(image);
+		imgWidth = image.getWidth();
+		imgHeight = image.getHeight();
+		rect = new Rect(0,0,imgWidth, imgHeight);
 
 		// 位置の初期化
-		px  = x = 240 - image.getWidth()/2;
-		py = y = 280 - image.getHeight();
+		rect.offsetTo(240 - imgWidth/2, 700 - imgHeight);
+		tx = rect.centerX();
+		ty = rect.centerY();
 		dx = dy = 0;
 
 		// 弾番号の初期化
@@ -36,26 +45,24 @@ public class MyPlane extends Sprite {
 	 */
 	public void move() {
 		// 目標地点との距離を算出
-		float ddx = px - x;
-		float ddy = py - y;
+		int ddx = tx - rect.centerX();
+		int ddy = ty - rect.centerY();
 		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);
 
 		// 移動先座標を算出
 		if(len >= MOVE){
-			dx = ddx * MOVE / len;
-			dy = ddy * MOVE / len;
+			dx = (int)(ddx * MOVE / len);
+			dy = (int)(ddy * MOVE / len);
 		}else{
 			dx = ddx;
 			dy = ddy;
 		}
 
-		x += dx;
-		y += dy;
+		rect.offset(dx, dy);
 
 		// マトリックス
-		values[Matrix.MTRANS_X] = x;
-		values[Matrix.MTRANS_Y] = y;
-		matrix.setValues(values);
+		matrix.setTranslate(rect.left, rect.top);
+		//matrix.setValues(values);
 	}
 
 	/**
@@ -72,8 +79,8 @@ public class MyPlane extends Sprite {
 	 * @param ty 目的地のy座標
 	 */
 	public void setPlace(float tx, float ty){
-		px = tx - image.getWidth()/2;
-		py = ty - image.getHeight()/2;
+		this.tx = (int)tx;
+		this.ty = (int)ty;
 	}
 
 	/**
@@ -87,7 +94,7 @@ public class MyPlane extends Sprite {
 		// 弾をうつ条件が整ったら
 		if(b[bno].getReady() && interval > 200){
 			// 弾を撃つ
-			b[bno].shoot(x + image.getWidth()/2, y);
+			b[bno].shoot(this);
 
 			// 次の弾の準備
 			bno++;

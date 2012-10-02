@@ -1,6 +1,7 @@
 package bemax.shootinggame;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -63,26 +65,25 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 		float[] values = new float[9];
 		matrix.getValues(values);
 		long st, ed,dist;
+		Resources res = surfaceview.getResources();
 
 		// 主人公機を初期化
-		myplane = new MyPlane(BitmapFactory.decodeResource(surfaceview.getResources(), R.drawable.myplane));
+		myplane = new MyPlane(res);
 
 		// 敵を初期化
-		enemies[0] = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy00));
-		enemies[1] = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy01));
-		enemies[2]  = new Enemy00(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.enemy02));
+		enemies[0] = new Enemy00(res);
+		enemies[1] = new Enemy01(res);
+		enemies[2] = new Enemy03(res);
 
 		// 弾を初期化
-		bullets[0] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
-		bullets[1] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
-		bullets[2] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
-		bullets[3] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
-		bullets[4] = new Bullet(BitmapFactory.decodeResource(surfaceview.getResources(),R.drawable.bullet));
+		for(int i=0; i<bullets.length; i++){
+			bullets[i] = new Bullet(res);
+		}
 
 		// 敵の初期位置をリセット
-		enemies[0].reset();
-		enemies[1].reset();
-		enemies[2].reset();
+		for(int i=0; i<enemies.length; i++){
+			enemies[i].reset();
+		}
 
 		// メインルーチン
 		while(loop){
@@ -98,19 +99,23 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			// 弾を動かす
 			for(int i=0; i<bullets.length; i++){
 				bullets[i].move();
-				for(int j=0; j<enemies.length; j++){
-					if(!bullets[i].getReady() && bullets[i].hit(enemies[j])){
-						enemies[j].reset();
-						bullets[i].reset();
-					}
-				}
 			}
 
 			// 敵を動かす
 			for(int i=0; i<enemies.length; i++){
-				enemies[i].move();
-				if(enemies[i].hit(myplane)){
+				enemies[i].move(myplane);
+				if(enemies[i].state == Enemy.LIVE && enemies[i].hit(myplane)){
 					loop = false;
+				}
+			}
+
+			// 弾と敵との当たり判定処理
+			for(int i=0; i<bullets.length; i++){
+				for(int j=0; j<enemies.length; j++){
+					if(!bullets[i].getReady() && enemies[j].state==Enemy.LIVE && bullets[i].hit(enemies[j])){
+						enemies[j].setState(Enemy.DEAD);
+						bullets[i].reset();
+					}
 				}
 			}
 
@@ -131,16 +136,14 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			myplane.draw(canvas);
 
 			// 弾を描画
-			bullets[0].draw(canvas);
-			bullets[1].draw(canvas);
-			bullets[2].draw(canvas);
-			bullets[3].draw(canvas);
-			bullets[4].draw(canvas);
+			for(int i=0; i<bullets.length; i++){
+				bullets[i].draw(canvas);
+			}
 
 			// 敵を描画
-			enemies[0].draw(canvas);
-			enemies[1].draw(canvas);
-			enemies[2].draw(canvas);
+			for(int i=0; i<enemies.length; i++){
+				enemies[i].draw(canvas);
+			}
 
 			// キャンバスをアンロック
 			holder.unlockCanvasAndPost(canvas);

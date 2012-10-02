@@ -1,6 +1,8 @@
 package bemax.shootinggame;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -13,33 +15,26 @@ import android.util.Log;
  * 2012.9.13
  */
 public abstract class Sprite {
+	protected Resources res;
 	protected Matrix matrix;
 	protected float[] values;
-	protected float x, y, dx, dy;
+	protected int dx, dy;
 	protected Bitmap image;
 	protected boolean[][] shadow;
 	protected int imgWidth, imgHeight;
+	protected Rect rect;
 
 	/**
 	 * コンストラクタ
 	 */
-	public Sprite(Bitmap img){
+	public Sprite(Resources r){
+		// リソースの初期化
+		res = r;
+
 		// matrix初期化
 		matrix = new Matrix();
-		values = new float[9];
-		matrix.getValues(values);
-
-		// パラメータ初期化
-		x = 0;
-		y = -80;
-		dx = 0;
-		dy = 0;
-
-		// image初期化
-		image = img;
-		imgWidth = img.getWidth();
-		imgHeight = img.getHeight();
-		makeShadow();
+		//values = new float[9];
+		//matrix.getValues(values);
 	}
 
 	/**
@@ -56,26 +51,29 @@ public abstract class Sprite {
 	/**
 	 * 影データを作る
 	 */
-	public void makeShadow(){
-		// 影配列を初期化
-		shadow = new boolean[imgHeight][imgWidth];
-		// ピクセル処理用の配列を初期化
-		int[] pixels = new int[imgWidth * imgHeight];
-		// imageからピクセル配列を生成
-		image.getPixels(pixels, 0, imgWidth, 0, 0, imgWidth, imgHeight);
+	protected static boolean[][] getShadow(Bitmap img){
+		int h = img.getHeight();
+		int w = img.getWidth();
 
-		for(int i=0; i<shadow.length; i++){
-			for(int j=0; j<shadow[i].length;j++){
+		// 影配列を初期化
+		boolean[][] sdw = new boolean[h][w];
+		// ピクセル処理用の配列を初期化
+		int[] pixels = new int[w * h];
+		// imageからピクセル配列を生成
+		img.getPixels(pixels, 0, w, 0, 0, w, h);
+
+		for(int i=0; i<sdw.length; i++){
+			for(int j=0; j<sdw[i].length;j++){
 				// ピクセル配列からデータを取得
-				int pixcel = pixels[ j + i * imgWidth ];
+				int pixcel = pixels[ j + i * w ];
 				// 透明度によって分岐
 				if(Color.alpha(pixcel)==0){
 					// 透明ならばfalse
-					shadow[j][i] = false;
+					sdw[j][i] = false;
 					// pixels[ j + i * imgWidth ] = Color.WHITE;
 				}else{
 					// 不透明ならばture
-					shadow[j][i] = true;
+					sdw[j][i] = true;
 					// pixels[ j + i * imgWidth ] = Color.BLACK;
 				}
 			}
@@ -85,10 +83,11 @@ public abstract class Sprite {
 		dummy.setPixels(pixels, 0, imgWidth, 0, 0, imgWidth, imgHeight);
 		image = dummy;
 		*/
+		return sdw;
 	}
 
 	public Rect getRect(){
-		return new Rect((int)x, (int)y, (int)x+imgWidth, (int)y+imgHeight);
+		return rect;
 	}
 
 	public boolean hit(Sprite sp){
@@ -113,10 +112,6 @@ public abstract class Sprite {
 				rc.right = spr.right;
 				rc.bottom = spr.bottom;
 			}
-			Log.d("left",""+rc.left);
-			Log.d("top",""+rc.top);
-			Log.d("right",""+rc.right);
-			Log.d("bottom",""+rc.bottom);
 
 			int w = rc.right - rc.left;
 			int h = rc.bottom - rc.top;
@@ -133,11 +128,15 @@ public abstract class Sprite {
 		return false;
 	}
 
-	public float getX(){
-		return x;
+	protected Bitmap setImage(int id){
+		return BitmapFactory.decodeResource(res, id);
 	}
 
-	public float getY(){
-		return y;
+	public int getX(){
+		return rect.left;
+	}
+
+	public int getY(){
+		return rect.top;
 	}
 }

@@ -1,8 +1,11 @@
 package bemax.shootinggame;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 
 /**
  * 弾クラス
@@ -11,11 +14,20 @@ import android.graphics.Matrix;
 public class Bullet extends Sprite {
 	private boolean ready;	//弾が発射状態かそうでないかを示すフラグ
 
-	public Bullet(Bitmap img){
-		super(img);
+	public Bullet(Resources r){
+		super(r);
+		image = setImage(R.drawable.bullet);
+		shadow = getShadow(image);
+		imgWidth = image.getWidth();
+		imgHeight = image.getHeight();
+		rect = new Rect(0, 0, imgWidth, imgHeight);
+
 		dx = 0;
 		dy = 0;
+
 		ready = true;
+
+		reset();
 	}
 
 	/**
@@ -31,22 +43,21 @@ public class Bullet extends Sprite {
 	 */
 	@Override
 	public void move() {
-		//弾のy座標を更新
-		y += dy;
+		// 矩形を平行移動
+		rect.offset(dx, dy);
 
 		//画面上部から消えた場合の処理
-		if (y < -image.getHeight()){
-			//弾の移動量を0にする
+		if (rect.bottom <= 0){
+			// 弾の移動量を0にする
 			dy = 0;
-
-			//発射準備OKにする
+			// 発射準備OKにする
 			ready = true;
+			// 弾の位置を初期化
+			reset();
 		}
 
 		//トランスフォーム
-		values[Matrix.MTRANS_X] = x;
-		values[Matrix.MTRANS_Y] = y;
-		matrix.setValues(values);
+		matrix.setTranslate(getX(), getY());
 	}
 
 	/**
@@ -54,10 +65,11 @@ public class Bullet extends Sprite {
 	 * @param x 発射位置のx座標
 	 * @param y 発射位置のy座標
 	 */
-	public void shoot(float bx, float by){
+	public void shoot(MyPlane mp){
 		//弾の初期位置を設定
-		x = bx - image.getWidth()/2;
-		y = by;
+		int x = mp.rect.centerX() - imgWidth;
+		int y = mp.rect.top;
+		rect.set(x, y, x+imgWidth, y+imgHeight);
 
 		//弾の移動量を設定
 		dy = -25;
@@ -75,8 +87,7 @@ public class Bullet extends Sprite {
 	}
 
 	public void reset(){
-		x = 0;
-		y = -image.getWidth();
+		rect.offsetTo(0, -imgHeight);
 		ready = true;
 	}
 }

@@ -1,17 +1,27 @@
 package bemax.shootinggame;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 public class Enemy02 extends Enemy {
 	private Paint paint;
 	private int alp;
 
-	public Enemy02(Bitmap img) {
-		super(img);
+	public Enemy02(Resources r) {
+		super(r);
+		image = BitmapFactory.decodeResource(res, R.drawable.enemy02);
+		shadow = getShadow(image);
+		imgWidth = image.getWidth();
+		imgHeight = image.getHeight();
+		rect = new Rect(0,0,imgWidth, imgHeight);
 
+		hp = 3;
 		point = 30;
+
 		alp = 128;
 		paint = new Paint();
 		paint.setAlpha(alp);
@@ -45,20 +55,19 @@ public class Enemy02 extends Enemy {
 			break;
 		}
 
-		x += dx;
-		y += dy;
+		rect.offset(dx, dy);
 
-		if(x<0){
-			x = 0;
+		if(rect.left < 0){
+			rect.offsetTo(0, rect.top);
 			dx = -dx;
-		}else if(x > 480-image.getWidth()){
-			x = 480 - image.getWidth();
+		}else if(rect.right > 480){
+			rect.offsetTo(480 - imgWidth, rect.top);
 			dx = -dx;
 		}
 
-		matrix.setTranslate(x, y);
+		matrix.setTranslate(getX(), getY());
 
-		if(y > 800){
+		if(rect.top > 800){
 			reset();
 		}
 	}
