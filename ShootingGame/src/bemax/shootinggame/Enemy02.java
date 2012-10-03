@@ -14,7 +14,7 @@ public class Enemy02 extends Enemy {
 	public Enemy02(Resources r) {
 		super(r);
 		image = BitmapFactory.decodeResource(res, R.drawable.enemy02);
-		shadow = getShadow(image);
+		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth, imgHeight);

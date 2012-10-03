@@ -25,7 +25,7 @@ public class MyPlane extends Sprite {
 	public MyPlane(Resources r){
 		super(r);
 		image = BitmapFactory.decodeResource(res, R.drawable.myplane);
-		shadow = getShadow(image);
+		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth, imgHeight);
@@ -92,13 +92,13 @@ public class MyPlane extends Sprite {
 		long interval = System.currentTimeMillis() - shoottime;
 
 		// 弾をうつ条件が整ったら
-		if(b[bno].getReady() && interval > 200){
+		if(b[bno].getReady() && interval > 50){
 			// 弾を撃つ
 			b[bno].shoot(this);
 
 			// 次の弾の準備
 			bno++;
-			if (bno==5){
+			if (bno==b.length){
 				bno = 0;
 			}
 

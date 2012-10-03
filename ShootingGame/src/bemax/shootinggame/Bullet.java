@@ -1,10 +1,7 @@
 package bemax.shootinggame;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 
 /**
@@ -17,7 +14,7 @@ public class Bullet extends Sprite {
 	public Bullet(Resources r){
 		super(r);
 		image = setImage(R.drawable.bullet);
-		shadow = getShadow(image);
+		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0, 0, imgWidth, imgHeight);

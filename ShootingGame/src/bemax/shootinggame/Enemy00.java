@@ -4,12 +4,12 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 
 public class Enemy00 extends Enemy{
-	private final int HP = 3;
+	private final int HP = 4;
 
 	public Enemy00(Resources r) {
 		super(r);
 		image = setImage(R.drawable.enemy00);
-		shadow = getShadow(image);
+		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth, imgHeight);

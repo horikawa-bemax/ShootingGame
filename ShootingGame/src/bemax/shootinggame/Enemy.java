@@ -61,8 +61,8 @@ public abstract class Enemy extends Sprite{
 	 */
 	public void reset(){
 		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
-		dx = rand.nextInt(10) - 20;
-		dy = rand.nextInt(10) + 5;
+		dx = rand.nextInt(5) - 9;
+		dy = rand.nextInt(5) + 5;
 	}
 
 	public void draw(Canvas canvas){

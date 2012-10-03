@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.util.Log;
 
 /**
  * スプライトクラス
@@ -51,16 +50,16 @@ public abstract class Sprite {
 	/**
 	 * 影データを作る
 	 */
-	protected static boolean[][] getShadow(Bitmap img){
-		int h = img.getHeight();
-		int w = img.getWidth();
+	protected boolean[][] getShadow(){
+		int h = image.getWidth();
+		int w = image.getHeight();
 
 		// 影配列を初期化
 		boolean[][] sdw = new boolean[h][w];
 		// ピクセル処理用の配列を初期化
 		int[] pixels = new int[w * h];
 		// imageからピクセル配列を生成
-		img.getPixels(pixels, 0, w, 0, 0, w, h);
+		image.getPixels(pixels, 0, w, 0, 0, w, h);
 
 		for(int i=0; i<sdw.length; i++){
 			for(int j=0; j<sdw[i].length;j++){
@@ -70,19 +69,19 @@ public abstract class Sprite {
 				if(Color.alpha(pixcel)==0){
 					// 透明ならばfalse
 					sdw[j][i] = false;
-					// pixels[ j + i * imgWidth ] = Color.WHITE;
+					pixels[ j + i * imgWidth ] = Color.WHITE;
 				}else{
 					// 不透明ならばture
 					sdw[j][i] = true;
-					// pixels[ j + i * imgWidth ] = Color.BLACK;
+					pixels[ j + i * imgWidth ] = Color.BLACK;
 				}
 			}
 		}
-		/*
+
 		Bitmap dummy = image.copy(Bitmap.Config.ARGB_8888, true);
 		dummy.setPixels(pixels, 0, imgWidth, 0, 0, imgWidth, imgHeight);
 		image = dummy;
-		*/
+
 		return sdw;
 	}
 
@@ -91,41 +90,25 @@ public abstract class Sprite {
 	}
 
 	public boolean hit(Sprite sp){
-		Rect mr = getRect();
+		boolean hit = false;
+		Rect mr = new Rect(rect);
 		Rect spr = sp.getRect();
 
 		if(mr.intersect(spr)){
-			Rect rc = new Rect(mr);
-			if(mr.contains(spr.left, spr.top)){
-				rc.left = spr.left;
-				rc.top = spr.top;
-			}
-			if(mr.contains(spr.right, spr.top)){
-				rc.right = spr.right;
-				rc.top = spr.top;
-			}
-			if(mr.contains(spr.left, spr.bottom)){
-				rc.left = spr.left;
-				rc.bottom = spr.bottom;
-			}
-			if(mr.contains(spr.right, spr.bottom)){
-				rc.right = spr.right;
-				rc.bottom = spr.bottom;
-			}
+			int w = mr.width();
+			int h = mr.height();
 
-			int w = rc.right - rc.left;
-			int h = rc.bottom - rc.top;
-
+			bingo:
 			for(int i=0; i<h; i++){
 				for(int j=0; j<w; j++){
-					if(shadow[i+rc.top-mr.top][j+rc.left-mr.left]&sp.shadow[i+rc.top-spr.top][j+rc.left-spr.left]){
-						return true;
+					if(shadow[i+mr.top-rect.top][j+mr.left-rect.left] && sp.shadow[i+mr.top-spr.top][j+mr.left-spr.left]){
+						 hit = true;
+						 break bingo;
 					}
 				}
 			}
-
 		}
-		return false;
+		return hit;
 	}
 
 	protected Bitmap setImage(int id){

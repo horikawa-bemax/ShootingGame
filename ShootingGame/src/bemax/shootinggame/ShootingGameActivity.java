@@ -2,15 +2,14 @@ package bemax.shootinggame;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -104,9 +103,6 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			// 敵を動かす
 			for(int i=0; i<enemies.length; i++){
 				enemies[i].move(myplane);
-				if(enemies[i].state == Enemy.LIVE && enemies[i].hit(myplane)){
-					loop = false;
-				}
 			}
 
 			// 弾と敵との当たり判定処理
@@ -118,6 +114,17 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 						}
 						bullets[i].reset();
 					}
+				}
+			}
+
+			// 主人公機と敵のあたり判定
+			hit_enemy:
+			for(int i=0; i<enemies.length; i++){
+				Log.d("hit",enemies[i].hit(myplane)?"HIT":"NG");
+				if(enemies[i].state == Enemy.LIVE && enemies[i].hit(myplane)){
+					loop = false;
+					enemies[i].state = Enemy.DEAD;
+					break hit_enemy;
 				}
 			}
 
@@ -163,7 +170,6 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 					e.printStackTrace();
 				}
 			}
-
 		}
 	}
 

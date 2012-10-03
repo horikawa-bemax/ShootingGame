@@ -14,7 +14,7 @@ public class Enemy03 extends Enemy{
 	public Enemy03(Resources r) {
 		super(r);
 		image = setImage(R.drawable.enemy00);
-		shadow = getShadow(image);
+		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth, imgHeight);
