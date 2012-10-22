@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, ShootingGameActivity!</string>
     <string name="app_name">ShootingGame</string>
+    <string name="start">START</string>
+    <string name="game_over">GAME OVER</string>
 
 </resources>
