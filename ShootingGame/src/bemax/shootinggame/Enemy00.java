@@ -27,6 +27,7 @@ public class Enemy00 extends Enemy{
 	public void move() {
 		switch(state){
 		case LIVE:
+		case HIT:
 			// 座標更新
 			rect.offset(dx, dy);
 			// 横壁で跳ね返る

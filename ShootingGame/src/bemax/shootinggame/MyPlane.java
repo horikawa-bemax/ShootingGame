@@ -58,6 +58,18 @@ public class MyPlane extends Sprite {
 			dy = ddy;
 		}
 
+		if(rect.left + dx < 0){
+			dx = 0 - rect.left;
+		}else if(rect.right + dx > 480){
+			dx = 480 - rect.right;
+		}
+
+		if(rect.top + dy < 0){
+			dy = 0 - rect.top;
+		}else if(rect.bottom + dy > 780){
+			dy = 780 - rect.bottom;
+		}
+
 		rect.offset(dx, dy);
 
 		// マトリックス

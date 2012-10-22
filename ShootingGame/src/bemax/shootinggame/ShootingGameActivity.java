@@ -30,6 +30,8 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	private Enemy[] enemies;
 	private Bullet[] bullets;
 	private float sx,sy,dx,dy;
+	private int score;
+
 
 	/**
 	 * アクティビティが作られたとき実行される
@@ -52,6 +54,9 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 
         // ゲームルーチンを継続する
         loop = true;
+
+        /* スコアをリセット */
+        score = 0;
     }
 
     /**
@@ -65,6 +70,8 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 		matrix.getValues(values);
 		long st, ed,dist;
 		Resources res = surfaceview.getResources();
+
+		paint.setTextSize(30);
 
 		// 主人公機を初期化
 		myplane = new MyPlane(res);
@@ -108,11 +115,17 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			// 弾と敵との当たり判定処理
 			for(int i=0; i<bullets.length; i++){
 				for(int j=0; j<enemies.length; j++){
-					if(!bullets[i].getReady() && enemies[j].state==Enemy.LIVE && bullets[i].hit(enemies[j])){
+					if(!bullets[i].getReady() && (enemies[j].state == Enemy.LIVE || enemies[j].state == Enemy.HIT) && bullets[i].hit(enemies[j])){
 						if(enemies[j].damage()<=0){
-							enemies[j].setState(Enemy.DEAD);
+							enemies[j].state = Enemy.DEAD;
+							score += enemies[j].getPoint();
+						}else{
+							enemies[j].state = Enemy.HIT;
 						}
 						bullets[i].reset();
+					}
+					if(enemies[j].state == Enemy.HIT && enemies[j].damage()>0){
+						enemies[j].state = Enemy.LIVE;
 					}
 				}
 			}
@@ -153,6 +166,10 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			for(int i=0; i<enemies.length; i++){
 				enemies[i].draw(canvas);
 			}
+
+			/* 得点を表示 */
+			paint.setColor(Color.YELLOW);
+			canvas.drawText("SCORE:" + score, 300, 30, paint);
 
 			// キャンバスをアンロック
 			holder.unlockCanvasAndPost(canvas);
