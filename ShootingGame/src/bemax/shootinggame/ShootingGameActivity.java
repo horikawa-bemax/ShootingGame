@@ -8,12 +8,16 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * メインアクティビティ
@@ -22,6 +26,7 @@ import android.view.View.OnTouchListener;
  */
 public class ShootingGameActivity extends Activity implements SurfaceHolder.Callback, Runnable, OnTouchListener{
     private SurfaceView surfaceview;
+    private ImageView titleView, endView;
 	private SurfaceHolder holder;
 	private Rect field;
 	private Matrix matrix;
@@ -31,32 +36,57 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	private Bullet[] bullets;
 	private float sx,sy,dx,dy;
 	private int score;
-
-
+	private Handler handler;
+	
 	/**
 	 * アクティビティが作られたとき実行される
 	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // コンテンツビューをセット
-        setContentView(R.layout.main);
 
-        // サーフェイスビューをセット
-        surfaceview = (SurfaceView)findViewById(R.id.GameView);
-        holder = surfaceview.getHolder();
-        holder.addCallback(this);
-        surfaceview.setOnTouchListener(this);
+        final Object thisObj = this;
+        handler = new Handler(){
+        		public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				switch(msg.what){
+				case 0:
+					setContentView(R.layout.title);
+					titleView = (ImageView)findViewById(R.id.title_image);
+					titleView.setOnTouchListener((OnTouchListener)thisObj);
+					break;
+				case 1:
+					setContentView(R.layout.main);
+			        // サーフェイスビューをセット
+			        surfaceview = (SurfaceView)findViewById(R.id.GameView);
+			        holder = surfaceview.getHolder();
+			        holder.addCallback((SurfaceHolder.Callback)thisObj);
+			        surfaceview.setOnTouchListener((OnTouchListener)thisObj);
 
-        // 敵配列と弾配列を初期化
-        enemies = new Enemy[3];
-        bullets = new Bullet[5];
+			        // 敵配列と弾配列を初期化
+			        enemies = new Enemy[3];
+			        bullets = new Bullet[5];
 
-        // ゲームルーチンを継続する
-        loop = true;
+			        // ゲームルーチンを継続する
+			        loop = true;
 
-        /* スコアをリセット */
-        score = 0;
+			        /* スコアをリセット */
+			        score = 0;
+			        
+					break;
+				case 2:
+					setContentView(R.layout.end);
+					endView = (ImageView)findViewById(R.id.end_image);
+					endView.setOnTouchListener((OnTouchListener)thisObj);
+					
+					TextView txt = (TextView)findViewById(R.id.score_text);
+					txt.setText("SCORE : " + score);
+					break;
+				}
+			}
+        };
+
+        handler.sendEmptyMessage(0);
     }
 
     /**
@@ -115,17 +145,12 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			// 弾と敵との当たり判定処理
 			for(int i=0; i<bullets.length; i++){
 				for(int j=0; j<enemies.length; j++){
-					if(!bullets[i].getReady() && (enemies[j].state == Enemy.LIVE || enemies[j].state == Enemy.HIT) && bullets[i].hit(enemies[j])){
+					if(!bullets[i].getReady() && enemies[j].state == Enemy.LIVE && bullets[i].hit(enemies[j])){
 						if(enemies[j].damage()<=0){
 							enemies[j].state = Enemy.DEAD;
 							score += enemies[j].getPoint();
-						}else{
-							enemies[j].state = Enemy.HIT;
 						}
 						bullets[i].reset();
-					}
-					if(enemies[j].state == Enemy.HIT && enemies[j].damage()>0){
-						enemies[j].state = Enemy.LIVE;
 					}
 				}
 			}
@@ -188,6 +213,11 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 				}
 			}
 		}
+		
+		Message mes = new Message();
+		mes.obj = new int[]{score};
+		mes.what = 2;
+		handler.sendMessage(mes);
 	}
 
     /**
@@ -235,16 +265,24 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	 * 画面にタッチされたとき
 	 */
 	public boolean onTouch(View v, MotionEvent event) {
-		float x, y;
-
-		// タッチされた座標を算出
-		x = (event.getX() - dx) / sx;
-		y = (event.getY() - dy) / sy;
-
-		// 目標地点をセット
-		myplane.setPlace(x, y);
-
-		// 継続的にタッチを感知する
-		return true;
+		if(v == surfaceview){
+			float x, y;
+	
+			// タッチされた座標を算出
+			x = (event.getX() - dx) / sx;
+			y = (event.getY() - dy) / sy;
+	
+			// 目標地点をセット
+			myplane.setPlace(x, y);
+	
+			// 継続的にタッチを感知する
+			return true;
+		}else if(v == titleView){
+			handler.sendEmptyMessage(1);
+		}else if(v == endView){
+			handler.sendEmptyMessage(0);
+		}
+		
+		return false;
 	}
 }
