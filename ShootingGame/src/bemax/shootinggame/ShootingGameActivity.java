@@ -37,7 +37,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	private float sx,sy,dx,dy;
 	private int score;
 	private Handler handler;
-	
+
 	/**
 	 * アクティビティが作られたとき実行される
 	 */
@@ -52,7 +52,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 				switch(msg.what){
 				case 0:
 					setContentView(R.layout.title);
-					titleView = (ImageView)findViewById(R.id.title_image);
+					titleView = (ImageView)findViewById(R.id.plane_image);
 					titleView.setOnTouchListener((OnTouchListener)thisObj);
 					break;
 				case 1:
@@ -72,13 +72,13 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 
 			        /* スコアをリセット */
 			        score = 0;
-			        
+
 					break;
 				case 2:
 					setContentView(R.layout.end);
 					endView = (ImageView)findViewById(R.id.end_image);
 					endView.setOnTouchListener((OnTouchListener)thisObj);
-					
+
 					TextView txt = (TextView)findViewById(R.id.score_text);
 					txt.setText("SCORE : " + score);
 					break;
@@ -213,7 +213,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 				}
 			}
 		}
-		
+
 		Message mes = new Message();
 		mes.obj = new int[]{score};
 		mes.what = 2;
@@ -267,14 +267,14 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	public boolean onTouch(View v, MotionEvent event) {
 		if(v == surfaceview){
 			float x, y;
-	
+
 			// タッチされた座標を算出
 			x = (event.getX() - dx) / sx;
 			y = (event.getY() - dy) / sy;
-	
+
 			// 目標地点をセット
 			myplane.setPlace(x, y);
-	
+
 			// 継続的にタッチを感知する
 			return true;
 		}else if(v == titleView){
@@ -282,7 +282,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 		}else if(v == endView){
 			handler.sendEmptyMessage(0);
 		}
-		
+
 		return false;
 	}
 }
