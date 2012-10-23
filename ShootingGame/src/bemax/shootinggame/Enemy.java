@@ -21,7 +21,6 @@ public abstract class Enemy extends Sprite{
 	protected int deadcount;	// 死んでる状態を続けるカウント
 	protected int hidecount;		// 隠れている状態を続けるカウント
 	protected Bitmap burst;		// 爆発画像
-	protected Bitmap flash;
 	protected static final byte LIVE = 0;	// 生きている状態
 	protected static final byte DEAD = 1;	// 死んでいる状態
 	protected static final byte HIDE = 2;	// 隠れている状態
@@ -43,9 +42,6 @@ public abstract class Enemy extends Sprite{
 		hidecount = 15;
 		// 爆発画像
 		burst = BitmapFactory.decodeResource(r, R.drawable.burst);
-
-		/* flash画像初期化 */
-		flash = BitmapFactory.decodeResource(r, R.drawable.flash);
 	}
 
 	/**
@@ -74,7 +70,6 @@ public abstract class Enemy extends Sprite{
 	public void draw(Canvas canvas){
 		switch(state){
 		case LIVE:
-		case HIT:
 			canvas.drawBitmap(image, matrix, null);
 			break;
 		case DEAD:

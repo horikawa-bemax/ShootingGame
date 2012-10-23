@@ -4,28 +4,32 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical" >
-
+
     <TextView
         android:id="@+id/title_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
         android:text="@string/game_over"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="30dp" />
-
+
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/end_image"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:adjustViewBounds="true"
         android:src="@drawable/burst" />
-
+
     <TextView
         android:id="@+id/score_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="top|center"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="30dp" />
 
