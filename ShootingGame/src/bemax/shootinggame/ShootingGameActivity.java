@@ -1,12 +1,20 @@
 package bemax.shootinggame;
 
+import java.io.IOException;
+import java.util.HashMap;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,7 +32,7 @@ import android.widget.TextView;
  * @author Masaaki Horikawa
  * 2012.9.19
  */
-public class ShootingGameActivity extends Activity implements SurfaceHolder.Callback, Runnable, OnTouchListener{
+public class ShootingGameActivity extends Activity implements SurfaceHolder.Callback, Runnable, OnTouchListener, OnCompletionListener{
     private SurfaceView surfaceview;
     private ImageView titleView, endView;
 	private SurfaceHolder holder;
@@ -37,7 +45,10 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	private float sx,sy,dx,dy;
 	private int score;
 	private Handler handler;
-
+	private MediaPlayer player;
+	private SoundPool sePool;
+	private HashMap<Integer, Integer> map;
+	
 	/**
 	 * アクティビティが作られたとき実行される
 	 */
@@ -72,7 +83,15 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 
 			        /* スコアをリセット */
 			        score = 0;
-
+			        
+			        /* サウンド関連の初期化 */
+			        map = new HashMap<Integer, Integer>();
+			        sePool = new SoundPool(10,AudioManager.STREAM_MUSIC,1);
+			        map.put(R.raw.bakuhatsu, sePool.load((Context)thisObj, R.raw.bakuhatsu, 1));
+			        map.put(R.raw.hassya, sePool.load((Context)thisObj, R.raw.hassya, 1));
+			        player = MediaPlayer.create((Context)thisObj, R.raw.field);
+			        player.start();
+			        
 					break;
 				case 2:
 					setContentView(R.layout.end);
@@ -148,6 +167,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 					if(!bullets[i].getReady() && enemies[j].state == Enemy.LIVE && bullets[i].hit(enemies[j])){
 						if(enemies[j].damage()<=0){
 							enemies[j].state = Enemy.DEAD;
+							sePool.play(map.get(R.raw.bakuhatsu), 0.5f, 0.5f, 0, 0, 1.0f);
 							score += enemies[j].getPoint();
 						}
 						bullets[i].reset();
@@ -162,6 +182,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 				if(enemies[i].state == Enemy.LIVE && enemies[i].hit(myplane)){
 					loop = false;
 					enemies[i].state = Enemy.DEAD;
+					sePool.play(map.get(R.raw.bakuhatsu), 0.5f, 0.5f, 0, 0, 1.0f);
 					break hit_enemy;
 				}
 			}
@@ -284,5 +305,9 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 		}
 
 		return false;
+	}
+
+	public void onCompletion(MediaPlayer mp) {
+		mp.start();
 	}
 }
