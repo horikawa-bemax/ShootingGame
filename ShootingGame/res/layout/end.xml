@@ -32,5 +32,14 @@
         android:gravity="top|center"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="right"
+        android:text="音楽：音人,魔王魂 (50音順)"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>
