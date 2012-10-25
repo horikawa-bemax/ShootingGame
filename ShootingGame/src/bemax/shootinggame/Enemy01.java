@@ -14,7 +14,7 @@ public class Enemy01 extends Enemy {
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth,imgHeight);
 
-		hp = 3;
+		hp = 2;
 		point = 20;
 
 		deadcount = 10;
