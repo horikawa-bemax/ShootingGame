@@ -55,19 +55,17 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-		/* サウンドエフェクト初期化
+        /* サウンド関連初期化 */
         map = new HashMap<Integer, Integer>();
         sePool = new SoundPool(10,AudioManager.STREAM_MUSIC,1);
         map.put(R.raw.bakuhatsu, sePool.load(this, R.raw.bakuhatsu, 1));
         map.put(R.raw.hassya, sePool.load(this, R.raw.hassya, 1));
         map.put(R.raw.click, sePool.load(this, R.raw.click, 1));
-        */
 
         final Object thisObj = this;
         handler = new Handler(){
         		public void handleMessage(Message msg) {
 				super.handleMessage(msg);
-
 
 				switch(msg.what){
 				case 0:
@@ -75,11 +73,10 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 					titleView = (ImageView)findViewById(R.id.plane_image);
 					titleView.setOnTouchListener((OnTouchListener)thisObj);
 
-			        /* サウンド関連の初期化
+			        /* サウンド関連の初期化 */
 			        player = MediaPlayer.create((Context)thisObj, R.raw.opening);
 			        player.setLooping(true);
 			        player.start();
-			        */
 
 					break;
 				case 1:
@@ -100,11 +97,10 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			        /* スコアをリセット */
 			        score = 0;
 
-			        /* サウンド関連の初期化
+			        /* サウンド関連の初期化 */
 			        player = MediaPlayer.create((Context)thisObj, R.raw.field);
 			        player.setLooping(true);
 			        player.start();
-			        */
 
 					break;
 				case 2:
@@ -115,11 +111,10 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 					TextView txt = (TextView)findViewById(R.id.score_text);
 					txt.setText("SCORE : " + score);
 
-			        /* サウンド関連の初期化
+			        /* サウンド関連の初期化 */
 			        player = MediaPlayer.create((Context)thisObj, R.raw.gameover);
 			        player.setLooping(true);
 			        player.start();
-			        */
 
 					break;
 				}
@@ -198,7 +193,6 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			}
 
 			// 敵を動かす
-
 			for(int i=0; i<e; i++){
 				enemies[i].move(myplane);
 			}
@@ -226,9 +220,9 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 				if(enemies[i].state == Enemy.LIVE && enemies[i].hit(myplane)){
 					loop = false;
 					enemies[i].state = Enemy.DEAD;
-					/*
+
 					sePool.play(map.get(R.raw.bakuhatsu), 0.5f, 0.5f, 0, 0, 1.0f);
-					*/
+
 					break hit_enemy;
 				}
 			}
@@ -327,9 +321,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		loop = false;
 
-		/* 画面が切り替わったら音楽再生を止める
 			player.stop();
-		*/
 	}
 
 	/**
@@ -350,16 +342,14 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			return true;
 		}else if(v == titleView){
 			handler.sendEmptyMessage(1);
-			/*
+
 			player.stop();
 			sePool.play(map.get(R.raw.click), 0.5f, 0.5f, 0, 0, 1.0f);
-			*/
 		}else if(v == endView){
 			handler.sendEmptyMessage(0);
-			/*
+
 			player.stop();
 			sePool.play(map.get(R.raw.click), 0.5f, 0.5f, 0, 0, 1.0f);
-			*/
 		}
 
 		return false;
