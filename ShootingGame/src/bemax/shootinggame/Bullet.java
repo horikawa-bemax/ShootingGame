@@ -66,7 +66,7 @@ public class Bullet extends Sprite {
 		//弾の初期位置を設定
 		int x = mp.rect.centerX() - imgWidth;
 		int y = mp.rect.top;
-		rect.set(x, y, x+imgWidth, y+imgHeight);
+		rect.set(x, y, x+imgWidth/2, y+imgHeight);
 
 		//弾の移動量を設定
 		dy = -25;
