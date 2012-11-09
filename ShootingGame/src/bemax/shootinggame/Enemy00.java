@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 
 public class Enemy00 extends Enemy{
-	private final int HP = 4;
+	private final int HP = 1;
 
 	public Enemy00(Resources r) {
 		super(r);

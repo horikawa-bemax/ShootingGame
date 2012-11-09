@@ -1,6 +1,5 @@
 package bemax.shootinggame;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import android.app.Activity;
@@ -32,7 +31,7 @@ import android.widget.TextView;
  * @author Masaaki Horikawa
  * 2012.9.19
  */
-public class ShootingGameActivity extends Activity implements SurfaceHolder.Callback, Runnable, OnTouchListener, OnCompletionListener{
+public class ShootingGameActivity extends Activity implements SurfaceHolder.Callback, Runnable, OnTouchListener{
     private SurfaceView surfaceview;
     private ImageView titleView, endView;
 	private SurfaceHolder holder;
@@ -48,7 +47,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	private MediaPlayer player;
 	private SoundPool sePool;
 	private HashMap<Integer, Integer> map;
-	
+
 	/**
 	 * アクティビティが作られたとき実行される
 	 */
@@ -56,15 +55,29 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /* サウンド関連初期化 */
+        map = new HashMap<Integer, Integer>();
+        sePool = new SoundPool(10,AudioManager.STREAM_MUSIC,1);
+        map.put(R.raw.bakuhatsu, sePool.load(this, R.raw.bakuhatsu, 1));
+        map.put(R.raw.hassya, sePool.load(this, R.raw.hassya, 1));
+        map.put(R.raw.click, sePool.load(this, R.raw.click, 1));
+
         final Object thisObj = this;
         handler = new Handler(){
         		public void handleMessage(Message msg) {
 				super.handleMessage(msg);
+
 				switch(msg.what){
 				case 0:
 					setContentView(R.layout.title);
 					titleView = (ImageView)findViewById(R.id.plane_image);
 					titleView.setOnTouchListener((OnTouchListener)thisObj);
+
+			        /* サウンド関連の初期化 */
+			        player = MediaPlayer.create((Context)thisObj, R.raw.opening);
+			        player.setLooping(true);
+			        player.start();
+
 					break;
 				case 1:
 					setContentView(R.layout.main);
@@ -75,7 +88,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			        surfaceview.setOnTouchListener((OnTouchListener)thisObj);
 
 			        // 敵配列と弾配列を初期化
-			        enemies = new Enemy[3];
+			        enemies = new Enemy[10];
 			        bullets = new Bullet[5];
 
 			        // ゲームルーチンを継続する
@@ -83,15 +96,12 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 
 			        /* スコアをリセット */
 			        score = 0;
-			        
+
 			        /* サウンド関連の初期化 */
-			        map = new HashMap<Integer, Integer>();
-			        sePool = new SoundPool(10,AudioManager.STREAM_MUSIC,1);
-			        map.put(R.raw.bakuhatsu, sePool.load((Context)thisObj, R.raw.bakuhatsu, 1));
-			        map.put(R.raw.hassya, sePool.load((Context)thisObj, R.raw.hassya, 1));
 			        player = MediaPlayer.create((Context)thisObj, R.raw.field);
+			        player.setLooping(true);
 			        player.start();
-			        
+
 					break;
 				case 2:
 					setContentView(R.layout.end);
@@ -100,12 +110,25 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 
 					TextView txt = (TextView)findViewById(R.id.score_text);
 					txt.setText("SCORE : " + score);
+
+			        /* サウンド関連の初期化 */
+			        player = MediaPlayer.create((Context)thisObj, R.raw.gameover);
+			        player.setLooping(true);
+			        player.start();
+
 					break;
 				}
 			}
         };
 
         handler.sendEmptyMessage(0);
+    }
+
+    public void onStop(){
+    	super.onStop();
+    	if(player != null){
+    		player.stop();
+    	}
     }
 
     /**
@@ -129,6 +152,13 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 		enemies[0] = new Enemy00(res);
 		enemies[1] = new Enemy00(res);
 		enemies[2] = new Enemy00(res);
+		enemies[3] = new Enemy00(res);
+		enemies[4] = new Enemy00(res);
+		enemies[5] = new Enemy01(res);
+		enemies[6] = new Enemy01(res);
+		enemies[7] = new Enemy01(res);
+		enemies[8] = new Enemy01(res);
+		enemies[9] = new Enemy01(res);
 
 		// 弾を初期化
 		for(int i=0; i<bullets.length; i++){
@@ -140,10 +170,16 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			enemies[i].reset();
 		}
 
+		int e = 0;
+
 		// メインルーチン
 		while(loop){
 			// ループ開始時刻
 			st = System.currentTimeMillis();
+
+			if(e < 10){
+				e = score / 500 + 3;
+			}
 
 			// 主人公機が弾を撃つ
 			myplane.shoot(bullets);
@@ -157,17 +193,19 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			}
 
 			// 敵を動かす
-			for(int i=0; i<enemies.length; i++){
+			for(int i=0; i<e; i++){
 				enemies[i].move(myplane);
 			}
 
 			// 弾と敵との当たり判定処理
 			for(int i=0; i<bullets.length; i++){
-				for(int j=0; j<enemies.length; j++){
+				for(int j=0; j<e; j++){
 					if(!bullets[i].getReady() && enemies[j].state == Enemy.LIVE && bullets[i].hit(enemies[j])){
 						if(enemies[j].damage()<=0){
 							enemies[j].state = Enemy.DEAD;
+							/*
 							sePool.play(map.get(R.raw.bakuhatsu), 0.5f, 0.5f, 0, 0, 1.0f);
+							*/
 							score += enemies[j].getPoint();
 						}
 						bullets[i].reset();
@@ -177,12 +215,14 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 
 			// 主人公機と敵のあたり判定
 			hit_enemy:
-			for(int i=0; i<enemies.length; i++){
+			for(int i=0; i<e; i++){
 				Log.d("hit",enemies[i].hit(myplane)?"HIT":"NG");
 				if(enemies[i].state == Enemy.LIVE && enemies[i].hit(myplane)){
 					loop = false;
 					enemies[i].state = Enemy.DEAD;
+
 					sePool.play(map.get(R.raw.bakuhatsu), 0.5f, 0.5f, 0, 0, 1.0f);
+
 					break hit_enemy;
 				}
 			}
@@ -209,7 +249,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			}
 
 			// 敵を描画
-			for(int i=0; i<enemies.length; i++){
+			for(int i=0; i<e; i++){
 				enemies[i].draw(canvas);
 			}
 
@@ -229,8 +269,8 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			if(dist < 20){
 				try {
 					Thread.sleep(20-ed+st);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
 				}
 			}
 		}
@@ -280,6 +320,8 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 	 */
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		loop = false;
+
+			player.stop();
 	}
 
 	/**
@@ -300,14 +342,16 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			return true;
 		}else if(v == titleView){
 			handler.sendEmptyMessage(1);
+
+			player.stop();
+			sePool.play(map.get(R.raw.click), 0.5f, 0.5f, 0, 0, 1.0f);
 		}else if(v == endView){
 			handler.sendEmptyMessage(0);
+
+			player.stop();
+			sePool.play(map.get(R.raw.click), 0.5f, 0.5f, 0, 0, 1.0f);
 		}
 
 		return false;
-	}
-
-	public void onCompletion(MediaPlayer mp) {
-		mp.start();
 	}
 }
