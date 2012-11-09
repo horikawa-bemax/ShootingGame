@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 public class Enemy01 extends Enemy {
+	private boolean change;
 
 	public Enemy01(Resources r){
 		super(r);
@@ -24,12 +25,16 @@ public class Enemy01 extends Enemy {
 	}
 
 	@Override
-	public void move(MyPlane mp) {
+	public void move(MyPlane mp){
 		switch(state){
 		case LIVE:
-			if(mp.getX() < getX()){
+		case HIT:
+			if(change==false && mp.getY() - getY() <= 300){
+				change = true;
+			}
+			if(change && mp.getX() < getX()){
 				dx = getX() - mp.getX() > 5 ? -5 : mp.getX() - getX();
-			}else if(mp.getX() > getX()){
+			}else if(change && mp.getX() > getX()){
 				dx = mp.getX() - getX() > 5 ? 5 : mp.getX() - getX();
 			}else{
 				dx = 0;
@@ -61,11 +66,6 @@ public class Enemy01 extends Enemy {
 	}
 
 	@Override
-	public void draw(Canvas canvas) {
-		canvas.drawBitmap(image, matrix, null);
-	}
-
-	@Override
 	public void move() {
 
 	}
@@ -73,6 +73,8 @@ public class Enemy01 extends Enemy {
 	public void reset(){
 		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
 		dx = 0;
-		dy = rand.nextInt(25);
+		dy = 10;
+		change = false;
+		hp = 2;
 	}
 }

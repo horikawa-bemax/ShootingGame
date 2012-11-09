@@ -15,12 +15,12 @@ import android.graphics.Canvas;
  */
 public abstract class Enemy extends Sprite{
 	protected int point;			// 得点
-	protected Random rand;	// 乱数
+	protected Random rand;			// 乱数
 	protected int hp;				// 体力
 	protected byte state;			// 状態を表す変数
-	protected int deadcount;	// 死んでる状態を続けるカウント
+	protected int deadcount;		// 死んでる状態を続けるカウント
 	protected int hidecount;		// 隠れている状態を続けるカウント
-	protected Bitmap burst;		// 爆発画像
+	protected Bitmap burst;			// 爆発画像
 	protected static final byte LIVE = 0;	// 生きている状態
 	protected static final byte DEAD = 1;	// 死んでいる状態
 	protected static final byte HIDE = 2;	// 隠れている状態
