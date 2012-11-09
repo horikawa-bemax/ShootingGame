@@ -64,9 +64,9 @@ public class Bullet extends Sprite {
 	 */
 	public void shoot(MyPlane mp){
 		//弾の初期位置を設定
-		int x = mp.rect.centerX() - imgWidth;
+		int x = mp.rect.centerX() - imgWidth / 2;
 		int y = mp.rect.top;
-		rect.set(x, y, x+imgWidth/2, y+imgHeight);
+		rect.set(x, y, x+imgWidth, y+imgHeight);
 
 		//弾の移動量を設定
 		dy = -25;
