@@ -3,5 +3,6 @@
     <string name="app_name">ShootingGame</string>
     <string name="start">START</string>
     <string name="game_over">GAME OVER</string>
+    <string name="score_lavel">SCORE</string>
 
 </resources>

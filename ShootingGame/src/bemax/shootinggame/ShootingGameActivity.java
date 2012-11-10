@@ -109,7 +109,7 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 					endView.setOnTouchListener((OnTouchListener)thisObj);
 
 					TextView txt = (TextView)findViewById(R.id.score_text);
-					txt.setText("SCORE : " + score);
+					txt.setText("" + score);
 
 			        /* サウンド関連の初期化 */
 			        player = MediaPlayer.create((Context)thisObj, R.raw.gameover);

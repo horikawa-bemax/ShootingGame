@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ShootingGame</string>
+    <string name="start">スタート</string>
+    <string name="game_over">ゲーム オーバー</string>
+    <string name="score_lavel">得点</string>
+
+</resources>
