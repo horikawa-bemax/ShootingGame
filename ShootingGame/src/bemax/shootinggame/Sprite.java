@@ -32,8 +32,6 @@ public abstract class Sprite {
 
 		// matrix初期化
 		matrix = new Matrix();
-		//values = new float[9];
-		//matrix.getValues(values);
 	}
 
 	/**
@@ -85,10 +83,21 @@ public abstract class Sprite {
 		return sdw;
 	}
 
+	/**
+	 * 矩形を返す
+	 * @return
+	 */
 	public Rect getRect(){
 		return rect;
 	}
 
+	/**
+	 * エリアから出たかどうかを判定する
+	 */
+	public boolean outOfArea(Rect area){
+		return !Rect.intersects(rect, area);
+	}
+	
 	public boolean hit(Sprite sp){
 		boolean hit = false;
 		Rect mr = new Rect(rect);

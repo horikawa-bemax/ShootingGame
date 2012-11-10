@@ -1,7 +1,6 @@
 package bemax.shootinggame;
 
 import android.content.res.Resources;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 
 public class Enemy01 extends Enemy {
@@ -31,6 +30,7 @@ public class Enemy01 extends Enemy {
 		case HIT:
 			if(change==false && mp.getY() - getY() <= 300){
 				change = true;
+				dy = 10;
 			}
 			if(change && mp.getX() < getX()){
 				dx = getX() - mp.getX() > 5 ? -5 : mp.getX() - getX();
@@ -40,10 +40,6 @@ public class Enemy01 extends Enemy {
 				dx = 0;
 			}
 			rect.offset(dx, dy);
-
-			if(rect.top > 800){
-				reset();
-			}
 
 			matrix.setTranslate(getX(), getY());
 			break;
@@ -70,10 +66,13 @@ public class Enemy01 extends Enemy {
 
 	}
 
+	/**
+	 * リセット
+	 */
 	public void reset(){
 		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
 		dx = 0;
-		dy = 10;
+		dy = 15;
 		change = false;
 		hp = 2;
 	}

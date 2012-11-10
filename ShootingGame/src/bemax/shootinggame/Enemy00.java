@@ -40,10 +40,6 @@ public class Enemy00 extends Enemy{
 			}
 
 			matrix.setTranslate(getX(), getY());
-			// 画面から消失
-			if(rect.top > 800){
-				reset();
-			}
 			break;
 		case DEAD:
 			deadcount--;

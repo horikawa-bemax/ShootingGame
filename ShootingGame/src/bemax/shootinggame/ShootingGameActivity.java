@@ -195,6 +195,9 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			// 敵を動かす
 			for(int i=0; i<e; i++){
 				enemies[i].move(myplane);
+				if(enemies[i].outOfArea(field)){
+					enemies[i].reset();
+				}
 			}
 
 			// 弾と敵との当たり判定処理
@@ -305,14 +308,16 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 		values[Matrix.MTRANS_X] = dx;
 		values[Matrix.MTRANS_Y] = dy;
 		matrix.setValues(values);
+	
+		MainController c = new MainController(surfaceview);
+		c.start();
 	}
 
 	/**
 	 * サーフェイスが生成されたとき
 	 */
 	public void surfaceCreated(SurfaceHolder holder) {
-		Thread t = new Thread(this);
-		t.start();
+
 	}
 
 	/**
