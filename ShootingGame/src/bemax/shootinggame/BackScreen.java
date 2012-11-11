@@ -62,7 +62,6 @@ public class BackScreen {
 			}
 		}
 
-		bitmap =  Bitmap.createBitmap(480,780,Config.ARGB_8888);
 		r1 = new Rect();
 		r2 = new Rect();
 	}
