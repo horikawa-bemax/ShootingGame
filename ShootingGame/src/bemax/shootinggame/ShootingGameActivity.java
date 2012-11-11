@@ -70,13 +70,6 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 			        surfaceview = (SurfaceView)findViewById(R.id.GameView);
 			        holder = surfaceview.getHolder();
 			        holder.addCallback((SurfaceHolder.Callback)thisObj);
-			        surfaceview.setOnTouchListener((OnTouchListener)thisObj);
-
-			        /* サウンド関連の初期化 */
-			        player = MediaPlayer.create((Context)thisObj, R.raw.field);
-			        player.setLooping(true);
-			        player.start();
-
 					break;
 				case 2:
 					setContentView(R.layout.end);

@@ -9,7 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 
 public class BackScreen {
-	private Bitmap backScreen, bitmap;
+	private Bitmap backScreen;
 	private int begin, mapLength, speed;
 	private Bitmap[] reses;
 	private int[][] map;

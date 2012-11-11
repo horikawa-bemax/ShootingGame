@@ -4,10 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -27,23 +29,25 @@ public class MainController extends Thread implements OnTouchListener{
 	private Bullet[] bullets;
 	private BackScreen backScreen;
 	private boolean loop;
-	private int score;
+	private int score, se;
+	private MediaPlayer player;
+	private SoundPool pool;
 	private static final int ENEMIES = 10;
 	private static final int BULLETS = 5;
 	
-	public MainController(SurfaceView view, Handler hd){
+	public MainController(SurfaceView view, Handler hnd){
 		gameView = view;
-		handler = hd;
-		float sx = view.getWidth() / 480f;
-		float sy = view.getHeight() / 780f;
+		handler = hnd;
+		float sx = gameView.getWidth() / 480f;
+		float sy = gameView.getHeight() / 780f;
 		if(sx<sy){
 			sy = sx;
 		}else{
 			sx = sy;
 		}
-		phgRect = new Rect(0, 0, (int)(view.getWidth() * sx), (int)(view.getHeight() * sy));
+		phgRect = new Rect(0, 0, (int)(gameView.getWidth() * sx), (int)(gameView.getHeight() * sy));
 		logRect = new Rect(0, 0, 480, 780);
-		point = new Point((view.getWidth() - phgRect.width()) / 2, (view.getHeight() - phgRect.height()) / 2);
+		point = new Point((gameView.getWidth() - phgRect.width()) / 2, (gameView.getHeight() - phgRect.height()) / 2);
 		phgRect.offset(point.x, point.y);
 		
 		logImage = Bitmap.createBitmap(logRect.width(), logRect.height(), Config.ARGB_8888);
@@ -51,26 +55,32 @@ public class MainController extends Thread implements OnTouchListener{
 		enemies = new Enemy[ENEMIES];
 		bullets = new Bullet[BULLETS];
 
-		myplane = new MyPlane(view.getResources());
+		myplane = new MyPlane(gameView.getResources());
 		
-		enemies[0] = new Enemy00(view.getResources());
-		enemies[1] = new Enemy00(view.getResources());
-		enemies[2] = new Enemy00(view.getResources());
-		enemies[3] = new Enemy00(view.getResources());
-		enemies[4] = new Enemy00(view.getResources());
-		enemies[5] = new Enemy01(view.getResources());
-		enemies[6] = new Enemy01(view.getResources());
-		enemies[7] = new Enemy01(view.getResources());
-		enemies[8] = new Enemy01(view.getResources());
-		enemies[9] = new Enemy01(view.getResources());
+		enemies[0] = new Enemy00(gameView.getResources());
+		enemies[1] = new Enemy00(gameView.getResources());
+		enemies[2] = new Enemy00(gameView.getResources());
+		enemies[3] = new Enemy00(gameView.getResources());
+		enemies[4] = new Enemy00(gameView.getResources());
+		enemies[5] = new Enemy01(gameView.getResources());
+		enemies[6] = new Enemy01(gameView.getResources());
+		enemies[7] = new Enemy01(gameView.getResources());
+		enemies[8] = new Enemy01(gameView.getResources());
+		enemies[9] = new Enemy01(gameView.getResources());
 		
 		for(int i=0; i<bullets.length; i++){
-			bullets[i] = new Bullet(view.getResources());
+			bullets[i] = new Bullet(gameView.getResources());
 		}
 		
-		backScreen = new BackScreen(view.getResources());
+		backScreen = new BackScreen(gameView.getResources());
 		
 		gameView.setOnTouchListener(this);
+		
+        /* サウンド関連の初期化 */
+        player = MediaPlayer.create(gameView.getContext(), R.raw.field);
+        player.setLooping(true);
+        pool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+        se = pool.load(gameView.getContext(), R.raw.bakuhatsu, 1);
 	}
 
 	public void run() {
@@ -86,6 +96,8 @@ public class MainController extends Thread implements OnTouchListener{
 		int eNum = 3;
 		score = 0;
 		loop = true;
+		
+		player.start();
 		
 		while(loop){
 			st = System.currentTimeMillis();
@@ -114,9 +126,9 @@ public class MainController extends Thread implements OnTouchListener{
 					if(!bullets[i].getReady() && enemies[j].state == Enemy.LIVE && bullets[i].hit(enemies[j])){
 						if(enemies[j].damage()<=0){
 							enemies[j].state = Enemy.DEAD;
-							/*
-							sePool.play(map.get(R.raw.bakuhatsu), 0.5f, 0.5f, 0, 0, 1.0f);
-							*/
+							
+							pool.play(se, 0.3f, 0.3f, 0, 0, 1.0f);
+							
 							score += enemies[j].getPoint();
 						}
 						bullets[i].reset();
@@ -132,7 +144,7 @@ public class MainController extends Thread implements OnTouchListener{
 					loop = false;
 					enemies[i].state = Enemy.DEAD;
 
-					//sePool.play(map.get(R.raw.bakuhatsu), 0.5f, 0.5f, 0, 0, 1.0f);
+					pool.play(se, 0.3f, 0.3f, 0, 0, 1.0f);
 
 					break hit_enemy;
 				}
@@ -166,6 +178,8 @@ public class MainController extends Thread implements OnTouchListener{
 				}
 			}
 		}
+		
+		player.stop();
 		
 		/* メッセージ送信 */
 		Message mes = new Message();
