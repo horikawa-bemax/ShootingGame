@@ -1,7 +1,6 @@
 package bemax.shootinggame;
 
 import java.util.HashMap;
-
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
@@ -23,7 +22,7 @@ import android.widget.TextView;
  * @author Masaaki Horikawa
  * 2012.9.19
  */
-public class ShootingGameActivity extends Activity implements SurfaceHolder.Callback, OnTouchListener{
+public class ShootingGameActivity extends Activity implements OnTouchListener{
     private SurfaceView surfaceview;
     private ImageView titleView, endView;
 	private SurfaceHolder holder;
@@ -68,8 +67,8 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
 					setContentView(R.layout.main);
 			        // サーフェイスビューをセット
 			        surfaceview = (SurfaceView)findViewById(R.id.GameView);
-			        holder = surfaceview.getHolder();
-			        holder.addCallback((SurfaceHolder.Callback)thisObj);
+			        MainController main = new MainController(surfaceview, this);
+			        surfaceview.getHolder().addCallback(main);
 					break;
 				case 2:
 					setContentView(R.layout.end);
@@ -101,31 +100,6 @@ public class ShootingGameActivity extends Activity implements SurfaceHolder.Call
     		player.stop();
     	}
     }
-
-
-    /**
-     * サーフェイスが変化したとき
-     * */
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
-		/* ゲームのコントローラを生成、スタート */
-		mainController = new MainController(surfaceview, handler);
-		mainController.start();
-	}
-
-	/**
-	 * サーフェイスが生成されたとき
-	 */
-	public void surfaceCreated(SurfaceHolder holder) {
-		//ここでMainControllerをnewしちゃだめ！ surfaceViewがまだ出来上がってないから！
-	}
-
-	/**
-	 * サーフェイスが消去されたとき
-	 */
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		/* ゲームを強制的に終了します */
-		mainController.endLoop();
-	}
 
 	/**
 	 * 画面にタッチされたとき

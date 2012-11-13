@@ -14,12 +14,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-public class MainController extends Thread implements OnTouchListener{
+public class MainController implements Runnable, OnTouchListener, SurfaceHolder.Callback{
 	private SurfaceView gameView;
+	private SurfaceHolder holder;
 	private Handler handler;
 	private Rect phgRect, logRect;
 	private Point point;
@@ -28,7 +30,7 @@ public class MainController extends Thread implements OnTouchListener{
 	private Enemy[] enemies;
 	private Bullet[] bullets;
 	private BackScreen backScreen;
-	private boolean loop;
+	private boolean loop, gameover;
 	private int score, se;
 	private MediaPlayer player;
 	private SoundPool pool;
@@ -37,20 +39,9 @@ public class MainController extends Thread implements OnTouchListener{
 	
 	public MainController(SurfaceView view, Handler hnd){
 		gameView = view;
+		holder = gameView.getHolder();
+		holder.addCallback(this);
 		handler = hnd;
-		float sx = gameView.getWidth() / 480f;
-		float sy = gameView.getHeight() / 780f;
-		if(sx<sy){
-			sy = sx;
-		}else{
-			sx = sy;
-		}
-		phgRect = new Rect(0, 0, (int)(gameView.getWidth() * sx), (int)(gameView.getHeight() * sy));
-		logRect = new Rect(0, 0, 480, 780);
-		point = new Point((gameView.getWidth() - phgRect.width()) / 2, (gameView.getHeight() - phgRect.height()) / 2);
-		phgRect.offset(point.x, point.y);
-		
-		logImage = Bitmap.createBitmap(logRect.width(), logRect.height(), Config.ARGB_8888);
 		
 		enemies = new Enemy[ENEMIES];
 		bullets = new Bullet[BULLETS];
@@ -76,11 +67,7 @@ public class MainController extends Thread implements OnTouchListener{
 		
 		gameView.setOnTouchListener(this);
 		
-        /* サウンド関連の初期化 */
-        player = MediaPlayer.create(gameView.getContext(), R.raw.field);
-        player.setLooping(true);
-        pool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-        se = pool.load(gameView.getContext(), R.raw.bakuhatsu, 1);
+
 	}
 
 	public void run() {
@@ -96,9 +83,11 @@ public class MainController extends Thread implements OnTouchListener{
 		int eNum = 3;
 		score = 0;
 		loop = true;
+		gameover = false;
 		
 		player.start();
 		
+		try{
 		while(loop){
 			st = System.currentTimeMillis();
 			
@@ -145,7 +134,9 @@ public class MainController extends Thread implements OnTouchListener{
 					enemies[i].state = Enemy.DEAD;
 
 					pool.play(se, 0.3f, 0.3f, 0, 0, 1.0f);
-
+					
+					gameover = true;
+					
 					break hit_enemy;
 				}
 			}
@@ -172,27 +163,25 @@ public class MainController extends Thread implements OnTouchListener{
 			dist = et - st;
 			if(dist<20){
 				try {
-					sleep(20 - dist);
+					Thread.sleep(20 - dist);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}
+		}catch(NullPointerException e){
+			e.printStackTrace();
+		}
 		
 		player.stop();
 		
 		/* メッセージ送信 */
-		Message mes = new Message();
-		mes.obj = new int[]{score};
-		mes.what = 2;
-		handler.sendMessage(mes);
-	}
-	
-	/**
-	 * ループをやめる
-	 */
-	public void endLoop(){
-		loop = false;
+		if(gameover){
+			Message mes = new Message();
+			mes.obj = new int[]{score};
+			mes.what = 2;
+			handler.sendMessage(mes);
+		}
 	}
 	
 	/**
@@ -210,5 +199,47 @@ public class MainController extends Thread implements OnTouchListener{
 			myplane.setPlace(x, y);
 		}
 		return true;
+	}
+	
+	  /**
+     * サーフェイスが変化したとき
+     * */
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
+		float sx = width / 480f;
+		float sy = height / 780f;
+		if(sx<sy){
+			sy = sx;
+		}else{
+			sx = sy;
+		}
+		phgRect = new Rect(0, 0, (int)(width * sx), (int)(height * sy));
+		logRect = new Rect(0, 0, 480, 780);
+		point = new Point((width - phgRect.width()) / 2, (height - phgRect.height()) / 2);
+		phgRect.offset(point.x, point.y);
+		
+		logImage = Bitmap.createBitmap(logRect.width(), logRect.height(), Config.ARGB_8888);
+		
+		Thread t  = new Thread(this);
+		t.start();
+	}
+
+	/**
+	 * サーフェイスが生成されたとき
+	 */
+	public void surfaceCreated(SurfaceHolder holder) {
+        /* サウンド関連の初期化 */
+        player = MediaPlayer.create(gameView.getContext(), R.raw.field);
+        player.setLooping(true);
+        
+        pool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+        se = pool.load(gameView.getContext(), R.raw.bakuhatsu, 1);
+	}
+
+	/**
+	 * サーフェイスが消去されたとき
+	 */
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		/* ゲームを強制的に終了します */
+		this.loop = false;
 	}
 }
