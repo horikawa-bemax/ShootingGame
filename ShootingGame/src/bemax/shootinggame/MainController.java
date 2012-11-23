@@ -128,7 +128,6 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 			/* 敵と自機のあたり判定 */
 			hit_enemy:
 			for(int i=0; i<eNum; i++){
-				Log.d("hit",enemies[i].hit(myplane)?"HIT":"NG");
 				if(enemies[i].state == Enemy.LIVE && enemies[i].hit(myplane)){
 					loop = false;
 					enemies[i].state = Enemy.DEAD;
@@ -205,14 +204,14 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
      * サーフェイスが変化したとき
      * */
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
-		float sx = width / 480f;
-		float sy = height / 780f;
+		float sx = width / 480.0f;
+		float sy = height / 780.0f;
 		if(sx<sy){
 			sy = sx;
 		}else{
 			sx = sy;
 		}
-		phgRect = new Rect(0, 0, (int)(width * sx), (int)(height * sy));
+		phgRect = new Rect(0, 0, (int)(480 * sx), (int)(780 * sy));
 		logRect = new Rect(0, 0, 480, 780);
 		point = new Point((width - phgRect.width()) / 2, (height - phgRect.height()) / 2);
 		phgRect.offset(point.x, point.y);
