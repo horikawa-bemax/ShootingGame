@@ -8,17 +8,13 @@ public class Enemy01 extends Enemy {
 
 	public Enemy01(Resources r){
 		super(r);
-		image = setImage(R.drawable.enemy01);
+		image = setImage(R.drawable.geko);
 		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth,imgHeight);
 
-		hp = 2;
-		point = 20;
-
-		deadcount = 10;
-		hidecount = 10;
+		point = 10;
 
 		reset();
 	}

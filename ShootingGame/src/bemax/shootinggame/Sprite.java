@@ -49,8 +49,8 @@ public abstract class Sprite {
 	 * 影データを作る
 	 */
 	protected boolean[][] getShadow(){
-		int h = image.getWidth();
-		int w = image.getHeight();
+		int w = image.getWidth();
+		int h = image.getHeight();
 
 		// 影配列を初期化
 		boolean[][] sdw = new boolean[h][w];
@@ -66,11 +66,11 @@ public abstract class Sprite {
 				// 透明度によって分岐
 				if(Color.alpha(pixcel)==0){
 					// 透明ならばfalse
-					sdw[j][i] = false;
+					sdw[i][j] = false;
 					pixels[ j + i * imgWidth ] = Color.WHITE;
 				}else{
 					// 不透明ならばture
-					sdw[j][i] = true;
+					sdw[i][j] = true;
 					pixels[ j + i * imgWidth ] = Color.BLACK;
 				}
 			}
@@ -120,7 +120,9 @@ public abstract class Sprite {
 		return hit;
 	}
 
-	protected Bitmap setImage(int id){
+	protected Bitmap setImage(int id, int size){
+		Bitmap result;
+		BitmapFactory.Options op = new BitmapFactory.Options();
 		return BitmapFactory.decodeResource(res, id);
 	}
 

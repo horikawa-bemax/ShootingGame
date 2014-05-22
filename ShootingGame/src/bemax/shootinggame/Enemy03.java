@@ -10,7 +10,7 @@ public class Enemy03 extends Enemy{
 
 	public Enemy03(Resources r) {
 		super(r);
-		image = setImage(R.drawable.enemy00);
+		image = setImage(R.drawable.kero);
 		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();

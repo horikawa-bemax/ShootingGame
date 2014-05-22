@@ -50,14 +50,14 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 		
 		enemies[0] = new Enemy00(gameView.getResources());
 		enemies[1] = new Enemy00(gameView.getResources());
-		enemies[2] = new Enemy00(gameView.getResources());
+		enemies[2] = new Enemy01(gameView.getResources());
 		enemies[3] = new Enemy00(gameView.getResources());
-		enemies[4] = new Enemy00(gameView.getResources());
-		enemies[5] = new Enemy01(gameView.getResources());
-		enemies[6] = new Enemy01(gameView.getResources());
+		enemies[4] = new Enemy02(gameView.getResources());
+		enemies[5] = new Enemy00(gameView.getResources());
+		enemies[6] = new Enemy00(gameView.getResources());
 		enemies[7] = new Enemy01(gameView.getResources());
-		enemies[8] = new Enemy01(gameView.getResources());
-		enemies[9] = new Enemy01(gameView.getResources());
+		enemies[8] = new Enemy00(gameView.getResources());
+		enemies[9] = new Enemy02(gameView.getResources());
 		
 		for(int i=0; i<bullets.length; i++){
 			bullets[i] = new Bullet(gameView.getResources());

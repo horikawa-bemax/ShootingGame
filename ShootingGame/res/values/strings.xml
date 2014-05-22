@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ShootingGame</string>
+    <string name="app_name">Kero-Senki</string>
     <string name="start">START</string>
     <string name="game_over">GAME OVER</string>
     <string name="score_lavel">SCORE</string>

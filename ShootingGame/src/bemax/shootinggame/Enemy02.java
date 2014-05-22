@@ -9,22 +9,18 @@ import android.graphics.Rect;
 
 public class Enemy02 extends Enemy {
 	private Paint paint;
-	private int alp;
 
 	public Enemy02(Resources r) {
 		super(r);
-		image = BitmapFactory.decodeResource(res, R.drawable.enemy02);
+		image = setImage(R.drawable.geko);
 		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth, imgHeight);
 
-		hp = 1;
-		point = 30;
+		point = 20;
 
-		alp = 128;
-		paint = new Paint();
-		paint.setAlpha(alp);
+		reset();
 	}
 
 	@Override
@@ -32,36 +28,7 @@ public class Enemy02 extends Enemy {
 		switch(state){
 		case LIVE:
 		case HIT:
-			alp++;
-			if(alp>199){
-				alp = 0;
-			}
-			switch(alp/50){
-			case 0:
-				paint.setAlpha((alp%50)*5);
-			case 1:
-				break;
-			case 2:
-				paint.setAlpha(255 - (alp%50)*5);
-			case 3:
-				break;
-			}
 
-			rect.offset(dx, dy);
-
-			if(rect.left < 0){
-				rect.offsetTo(0, rect.top);
-				dx = -dx;
-			}else if(rect.right > 480){
-				rect.offsetTo(480 - imgWidth, rect.top);
-				dx = -dx;
-			}
-
-			matrix.setTranslate(getX(), getY());
-
-			if(rect.top > 800){
-				reset();
-			}
 
 			matrix.setTranslate(getX(), getY());
 			break;
@@ -87,6 +54,6 @@ public class Enemy02 extends Enemy {
 		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
 		dx = 0;
 		dy = 10;
-		hp = 2;
+		hp = 1;
 	}
 }
