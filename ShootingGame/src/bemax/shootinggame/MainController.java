@@ -12,13 +12,17 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+/**
+ * ゲームのメインコントローラ
+ * @author Masaaki Horikawa
+ * 2014.5.22
+ */
 public class MainController implements Runnable, OnTouchListener, SurfaceHolder.Callback{
 	private SurfaceView gameView;
 	private SurfaceHolder holder;
@@ -35,78 +39,101 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 	private MediaPlayer player;
 	private SoundPool pool;
 	private static final int ENEMIES = 10;
-	private static final int BULLETS = 5;
+	private static final int BULLETS = 6;
 	
+	/**
+	 * コンストラクタ
+	 * @param view	ゲームを描くサーフェイスビュー
+	 * @param hnd	画面切り替え用のハンドラ
+	 */
 	public MainController(SurfaceView view, Handler hnd){
 		gameView = view;
 		holder = gameView.getHolder();
 		holder.addCallback(this);
 		handler = hnd;
 		
+		/* 敵と弾の配列を初期化 */
 		enemies = new Enemy[ENEMIES];
 		bullets = new Bullet[BULLETS];
 
+		/* 自機の初期化 */
 		myplane = new MyPlane(gameView.getResources());
 		
-		enemies[0] = new Enemy00(gameView.getResources());
-		enemies[1] = new Enemy00(gameView.getResources());
-		enemies[2] = new Enemy01(gameView.getResources());
-		enemies[3] = new Enemy00(gameView.getResources());
-		enemies[4] = new Enemy02(gameView.getResources());
-		enemies[5] = new Enemy00(gameView.getResources());
-		enemies[6] = new Enemy00(gameView.getResources());
-		enemies[7] = new Enemy01(gameView.getResources());
-		enemies[8] = new Enemy00(gameView.getResources());
-		enemies[9] = new Enemy02(gameView.getResources());
+		/* 敵の初期化 */
+		enemies[0] = new Kero(gameView.getResources());
+		enemies[1] = new Kero(gameView.getResources());
+		enemies[2] = new Bigkero(gameView.getResources());
+		enemies[3] = new Kero(gameView.getResources());
+		enemies[4] = new Geko(gameView.getResources());
+		enemies[5] = new Kero(gameView.getResources());
+		enemies[6] = new Kero(gameView.getResources());
+		enemies[7] = new Bigkero(gameView.getResources());
+		enemies[8] = new Kero(gameView.getResources());
+		enemies[9] = new Geko(gameView.getResources());
 		
+		/* 弾の初期化 */
 		for(int i=0; i<bullets.length; i++){
 			bullets[i] = new Bullet(gameView.getResources());
 		}
 		
+		/* 背景の初期化 */
 		backScreen = new BackScreen(gameView.getResources());
 		
+		/* 画面タッチ用のリスナ */
 		gameView.setOnTouchListener(this);
-		
-
 	}
 
+	/**
+	 * メインルーチン
+	 */
 	public void run() {
 		Canvas canvas, logCanvas;
 		Paint paint;
 		long st, et, dist;
 		
-		logCanvas = new Canvas(logImage);
-		paint = new Paint();
-		paint.setColor(Color.YELLOW);
-		paint.setTextSize(30);
+		/* 画面の初期化 */
+		logCanvas = new Canvas(logImage);	// 論理画面からキャンバスを作成
+		paint = new Paint();				// ペイントの宣言
+		paint.setColor(Color.YELLOW);		// 得点表示の文字色
+		paint.setTextSize(30);				// 得点表示の文字サイズ
 		
-		int eNum = 3;
-		score = 0;
-		loop = true;
-		gameover = false;
+		/* 値の初期化 */
+		int eNum = 3;		// 初期の敵数
+		score = 0;			// 初期のスコア
+		loop = true;		// 初期のループフラグ
+		gameover = false;	// 初期のゲームオーバーフラグ
 		
+		/* プレイヤースレッド（自機）をスタート */
 		player.start();
 		
+		/* メインルーチン */
 		try{
 		while(loop){
+			/* ループ開始じの時刻を記録 */
 			st = System.currentTimeMillis();
 			
-			/* 敵の出現数をコントロール */
-			if(eNum < 10){
-				eNum = score / 500 + 3;
+			/* 敵の出現数をコントロール (300点ごとに敵が増えるように) */
+			if(eNum < 10 && eNum < score / 300 + 3){
+				eNum++;									// 敵の数を増やす
 			}
 			
-			/* 各エレメント移動 */
+			/* 敵の移動 */
 			for(int i=0; i<eNum; i++){
 				enemies[i].move(myplane);
 				if(enemies[i].outOfArea(logRect)){
 					enemies[i].reset();
 				}
 			}
+			
+			/* 発射中の弾の移動 */
 			for(int i=0; i<bullets.length; i++){
 				bullets[i].move();
 			}
+			
+			/* 自機の移動 */
 			myplane.move();
+			
+			/* 自機の攻撃 */
 			myplane.shoot(bullets);
 			
 			/* 敵と弾のあたり判定 */
@@ -185,6 +212,8 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 	
 	/**
 	 * 画面にタッチされたとき
+	 * @param v		タッチされたヴュー
+	 * @param event	発生したイベント
 	 */
 	public boolean onTouch(View v, MotionEvent event) {
 		if(v == gameView){
@@ -201,41 +230,53 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 	}
 	
 	  /**
-     * サーフェイスが変化したとき
+     * サーフェイスが変化したときに実行される
+     * @param holder
+     * @param format
+     * @param width		サーフェイスの横幅
+     * @param height	サーフェイスの縦幅
      * */
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
-		float sx = width / 480.0f;
-		float sy = height / 780.0f;
-		if(sx<sy){
+		/* 論理画面と物理画面のスケールを決定する */
+		float sx = width / 480.0f;		// 論理画面と物理画面の横方向のスケール
+		float sy = height / 780.0f;		// 論理画面と物理画面の縦方向のスケール
+		if(sx < sy){
 			sy = sx;
 		}else{
 			sx = sy;
 		}
-		phgRect = new Rect(0, 0, (int)(480 * sx), (int)(780 * sy));
-		logRect = new Rect(0, 0, 480, 780);
-		point = new Point((width - phgRect.width()) / 2, (height - phgRect.height()) / 2);
-		phgRect.offset(point.x, point.y);
 		
+		/* 論理画面の位置決定 */
+		phgRect = new Rect(0, 0, (int)(480 * sx), (int)(780 * sy));	// 物理画面の矩形
+		logRect = new Rect(0, 0, 480, 780);							// 論理画面の矩形
+		point = new Point((width - phgRect.width()) / 2, (height - phgRect.height()) / 2);	// 物理画面上の論理画面の左上のポイント
+		phgRect.offset(point.x, point.y);							// 物理画面の中央に論理画面がくるようにする
+		
+		/* 論理画面用のビットマップを作成 */
 		logImage = Bitmap.createBitmap(logRect.width(), logRect.height(), Config.ARGB_8888);
 		
+		/* メインルーチンを開始 */
 		Thread t  = new Thread(this);
 		t.start();
 	}
 
 	/**
 	 * サーフェイスが生成されたとき
+	 * @param holder
 	 */
 	public void surfaceCreated(SurfaceHolder holder) {
-        /* サウンド関連の初期化 */
+        /* BGMの初期化 */
         player = MediaPlayer.create(gameView.getContext(), R.raw.field);
         player.setLooping(true);
         
+        /* 効果音の初期化 */
         pool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
         se = pool.load(gameView.getContext(), R.raw.bakuhatsu, 1);
 	}
 
 	/**
 	 * サーフェイスが消去されたとき
+	 * @param holder
 	 */
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		/* ゲームを強制的に終了します */

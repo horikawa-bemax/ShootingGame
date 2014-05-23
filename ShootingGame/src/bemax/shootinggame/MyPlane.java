@@ -1,7 +1,6 @@
 package bemax.shootinggame;
 
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
@@ -22,7 +21,7 @@ public class MyPlane extends Sprite {
 	 */
 	public MyPlane(Resources r){
 		super(r);
-		image = BitmapFactory.decodeResource(res, R.drawable.myplane);
+		image = setImage(R.drawable.myplane,96);
 		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
@@ -102,13 +101,13 @@ public class MyPlane extends Sprite {
 		long interval = System.currentTimeMillis() - shoottime;
 
 		// 弾をうつ条件が整ったら
-		if(b[bno].getReady() && interval > 50){
+		if(b[bno].getReady() && interval > 100){
 			// 弾を撃つ
 			b[bno].shoot(this);
 
 			// 次の弾の準備
 			bno++;
-			if (bno==b.length){
+			if (bno==b.length/2){
 				bno = 0;
 			}
 

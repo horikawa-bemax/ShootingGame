@@ -3,12 +3,12 @@ package bemax.shootinggame;
 import android.content.res.Resources;
 import android.graphics.Rect;
 
-public class Enemy00 extends Enemy{
+public class Kero extends Enemy{
 	private final int HP = 1;
 
-	public Enemy00(Resources r) {
+	public Kero(Resources r) {
 		super(r);
-		image = setImage(R.drawable.kero);
+		image = setImage(R.drawable.kero,96);
 		shadow = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
@@ -60,4 +60,9 @@ public class Enemy00 extends Enemy{
 		}
 	}
 
+	public void reset(){
+		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
+		dx = rand.nextInt(5) - 9;
+		dy = rand.nextInt(5) + 5;
+	}
 }

@@ -60,11 +60,7 @@ public abstract class Enemy extends Sprite{
 	/**
 	 * 位置情報リセット
 	 */
-	public void reset(){
-		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
-		dx = rand.nextInt(5) - 9;
-		dy = rand.nextInt(5) + 5;
-	}
+	public abstract void reset();
 
 	public void draw(Canvas canvas){
 		switch(state){

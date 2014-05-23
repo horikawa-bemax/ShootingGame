@@ -20,7 +20,7 @@ import android.widget.TextView;
 /**
  * メインアクティビティ
  * @author Masaaki Horikawa
- * 2012.9.19
+ * 2012.9.19 update 2014.5.22
  */
 public class ShootingGameActivity extends Activity implements OnTouchListener{
     private SurfaceView surfaceview;
@@ -34,6 +34,7 @@ public class ShootingGameActivity extends Activity implements OnTouchListener{
 
 	/**
 	 * アクティビティが作られたとき実行される
+	 * @param savedInstanceStage	バンドル
 	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
