@@ -145,7 +145,7 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 							
 							pool.play(se, 0.3f, 0.3f, 0, 0, 1.0f);
 							
-							score += enemies[j].getPoint();
+							score += enemies[j].getDefeatPoint();
 						}
 						bullets[i].reset();
 					}

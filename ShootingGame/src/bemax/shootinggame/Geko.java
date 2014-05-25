@@ -3,18 +3,26 @@ package bemax.shootinggame;
 import android.content.res.Resources;
 import android.graphics.Rect;
 
+/**
+ * 敵キャラ「ゲコ」
+ * 主人公機めがけて突っ込んでくる敵
+ * @author masaaki
+ *
+ */
 public class Geko extends Enemy {
+	private final int DISP_SIZE = 96;		// 画面上の表示サイズ
+	
 	private boolean change;
 
 	public Geko(Resources r){
 		super(r);
-		image = setImage(R.drawable.geko, 96); 		// <= 画像リソース,サイズ
-		shadow = getShadow();
+		image = setImage(R.drawable.geko, DISP_SIZE); 		// <= 画像リソース,サイズ
+		shadowArry = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth,imgHeight);
 
-		point = 10;
+		defeatPoint = 10;
 
 		reset();
 	}
@@ -40,23 +48,27 @@ public class Geko extends Enemy {
 			matrix.setTranslate(getX(), getY());
 			break;
 		case DEAD:
-			deadcount--;
-			if(deadcount==0){
+			deadCount--;
+			if(deadCount==0){
 				state = HIDE;
-				deadcount = 10;
+				deadCount = 10;
 				reset();
 				matrix.setTranslate(getX(), getY());
 			}
 			break;
 		case HIDE:
-			hidecount--;
-			if(hidecount==0){
+			hidingCount--;
+			if(hidingCount==0){
 				state = LIVE;
-				hidecount = 10;
+				hidingCount = 10;
 			}
 		}
 	}
 
+	/**
+	 * 主人公機は関係ない動き
+	 * [ゲコ]では未実装
+	 */
 	@Override
 	public void move() {
 
@@ -70,6 +82,6 @@ public class Geko extends Enemy {
 		dx = 0;
 		dy = 10;
 		change = false;
-		hp = 1;
+		life = 1;
 	}
 }

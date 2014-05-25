@@ -14,7 +14,7 @@ public class Bullet extends Sprite {
 	public Bullet(Resources r){
 		super(r);
 		image = setImage(R.drawable.bullet,48);
-		shadow = getShadow();
+		shadowArry = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0, 0, imgWidth, imgHeight);

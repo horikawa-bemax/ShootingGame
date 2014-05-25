@@ -1,6 +1,7 @@
 package bemax.shootinggame;
 
 import java.util.HashMap;
+
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
@@ -10,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -25,12 +25,10 @@ import android.widget.TextView;
 public class ShootingGameActivity extends Activity implements OnTouchListener{
     private SurfaceView surfaceview;
     private ImageView titleView, endView;
-	private SurfaceHolder holder;
 	private Handler handler;
 	private MediaPlayer player;
 	private SoundPool sePool;
 	private HashMap<Integer, Integer> map;
-	private MainController mainController;
 
 	/**
 	 * アクティビティが作られたとき実行される

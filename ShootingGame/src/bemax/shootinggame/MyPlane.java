@@ -22,7 +22,7 @@ public class MyPlane extends Sprite {
 	public MyPlane(Resources r){
 		super(r);
 		image = setImage(R.drawable.myplane,96);
-		shadow = getShadow();
+		shadowArry = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth, imgHeight);

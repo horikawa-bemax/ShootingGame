@@ -3,6 +3,11 @@ package bemax.shootinggame;
 import android.content.res.Resources;
 import android.graphics.Rect;
 
+/**
+ * まだ未実装な敵キャラ
+ * @author masaaki
+ *
+ */
 public class Enemy03 extends Enemy{
 	private int len;
 	private float deg;
@@ -11,13 +16,13 @@ public class Enemy03 extends Enemy{
 	public Enemy03(Resources r) {
 		super(r);
 		image = setImage(R.drawable.kero,80);
-		shadow = getShadow();
+		shadowArry = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
 		rect = new Rect(0,0,imgWidth, imgHeight);
 
-		hp = HP;
-		point = 40;
+		life = HP;
+		defeatPoint = 40;
 
 		deg = 0;
 		len = 40;
@@ -55,20 +60,20 @@ public class Enemy03 extends Enemy{
 			break;
 
 		case DEAD:
-			deadcount--;
-			if(deadcount==0){
+			deadCount--;
+			if(deadCount==0){
 				state = HIDE;
-				deadcount = 10;
-				hp = HP;
+				deadCount = 10;
+				life = HP;
 				reset();
 				matrix.setTranslate(getX(), getY());
 			}
 			break;
 		case HIDE:
-			hidecount--;
-			if(hidecount==0){
+			hidingCount--;
+			if(hidingCount==0){
 				state = LIVE;
-				hidecount = 10;
+				hidingCount = 10;
 			}
 		}
 	}
