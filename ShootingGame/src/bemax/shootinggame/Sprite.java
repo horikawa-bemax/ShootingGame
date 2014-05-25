@@ -23,7 +23,7 @@ public abstract class Sprite {
 	protected boolean[][] shadowArry;		// 当たり判定用の配列
 	protected int imgWidth;						// イメージ画像の幅
 	protected int imgHeight;						// イメージ画像の高さ
-	protected Rect rect;
+	protected Rect drawingExtent;				// 描画範囲
 
 	/**
 	 * コンストラクタ
@@ -91,7 +91,7 @@ public abstract class Sprite {
 	 * @return	矩形
 	 */
 	public Rect getRect(){
-		return rect;
+		return drawingExtent;
 	}
 
 	/**
@@ -99,7 +99,7 @@ public abstract class Sprite {
 	 * @param area	判定対象のエリア
 	 */
 	public boolean outOfArea(Rect area){
-		return !Rect.intersects(rect, area);
+		return !Rect.intersects(drawingExtent, area);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public abstract class Sprite {
 	 */
 	public boolean hit(Sprite sp){
 		boolean hit = false;
-		Rect mr = new Rect(rect);
+		Rect mr = new Rect(drawingExtent);
 		Rect spr = sp.getRect();
 
 		if(mr.intersect(spr)){
@@ -119,7 +119,7 @@ public abstract class Sprite {
 			bingo:
 			for(int i=0; i<h; i++){
 				for(int j=0; j<w; j++){
-					if(shadowArry[i+mr.top-rect.top][j+mr.left-rect.left] && sp.shadowArry[i+mr.top-spr.top][j+mr.left-spr.left]){
+					if(shadowArry[i+mr.top-drawingExtent.top][j+mr.left-drawingExtent.left] && sp.shadowArry[i+mr.top-spr.top][j+mr.left-spr.left]){
 						 hit = true;
 						 break bingo;
 					}
@@ -174,7 +174,7 @@ public abstract class Sprite {
 	 * @return	X座標
 	 */
 	public int getX(){
-		return rect.left;
+		return drawingExtent.left;
 	}
 
 	/**
@@ -182,6 +182,6 @@ public abstract class Sprite {
 	 * @return	Y座標
 	 */
 	public int getY(){
-		return rect.top;
+		return drawingExtent.top;
 	}
 }

@@ -25,12 +25,12 @@ public class MyPlane extends Sprite {
 		shadowArry = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
-		rect = new Rect(0,0,imgWidth, imgHeight);
+		drawingExtent = new Rect(0,0,imgWidth, imgHeight);
 
 		// 位置の初期化
-		rect.offsetTo(240 - imgWidth/2, 700 - imgHeight);
-		tx = rect.centerX();
-		ty = rect.centerY();
+		drawingExtent.offsetTo(240 - imgWidth/2, 700 - imgHeight);
+		tx = drawingExtent.centerX();
+		ty = drawingExtent.centerY();
 		dx = dy = 0;
 
 		// 弾番号の初期化
@@ -42,8 +42,8 @@ public class MyPlane extends Sprite {
 	 */
 	public void move() {
 		// 目標地点との距離を算出
-		int ddx = tx - rect.centerX();
-		int ddy = ty - rect.centerY();
+		int ddx = tx - drawingExtent.centerX();
+		int ddy = ty - drawingExtent.centerY();
 		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);
 
 		// 移動先座標を算出
@@ -55,22 +55,22 @@ public class MyPlane extends Sprite {
 			dy = ddy;
 		}
 
-		if(rect.left + dx < 0){
-			dx = 0 - rect.left;
-		}else if(rect.right + dx > 480){
-			dx = 480 - rect.right;
+		if(drawingExtent.left + dx < 0){
+			dx = 0 - drawingExtent.left;
+		}else if(drawingExtent.right + dx > 480){
+			dx = 480 - drawingExtent.right;
 		}
 
-		if(rect.top + dy < 0){
-			dy = 0 - rect.top;
-		}else if(rect.bottom + dy > 780){
-			dy = 780 - rect.bottom;
+		if(drawingExtent.top + dy < 0){
+			dy = 0 - drawingExtent.top;
+		}else if(drawingExtent.bottom + dy > 780){
+			dy = 780 - drawingExtent.bottom;
 		}
 
-		rect.offset(dx, dy);
+		drawingExtent.offset(dx, dy);
 
 		// マトリックス
-		matrix.setTranslate(rect.left, rect.top);
+		matrix.setTranslate(drawingExtent.left, drawingExtent.top);
 		//matrix.setValues(values);
 	}
 

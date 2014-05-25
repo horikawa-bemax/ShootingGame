@@ -16,14 +16,18 @@ public class Geko extends Enemy {
 
 	public Geko(Resources r){
 		super(r);
-		image = setImage(R.drawable.geko, DISP_SIZE); 		// <= 画像リソース,サイズ
-		shadowArry = getShadow();
-		imgWidth = image.getWidth();
-		imgHeight = image.getHeight();
-		rect = new Rect(0,0,imgWidth,imgHeight);
+		
+		/* 画像をセットする */
+		image = setImage(R.drawable.geko, DISP_SIZE); 			// 画像を読み込む
+		shadowArry = getShadow();											// 当たり判定用の配列を作成
+		imgWidth = image.getWidth();										// 画像の横幅
+		imgHeight = image.getHeight();										// 画像の縦幅
+		drawingExtent = new Rect(0, 0, imgWidth, imgHeight);	// 画像の描画範囲
 
+		/* 撃破得点をセット */
 		defeatPoint = 10;
 
+		/* 初期化 */
 		reset();
 	}
 
@@ -43,7 +47,7 @@ public class Geko extends Enemy {
 			}else{
 				dx = 0;
 			}
-			rect.offset(dx, dy);
+			drawingExtent.offset(dx, dy);
 
 			matrix.setTranslate(getX(), getY());
 			break;
@@ -78,7 +82,7 @@ public class Geko extends Enemy {
 	 * リセット
 	 */
 	public void reset(){
-		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
+		drawingExtent.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
 		dx = 0;
 		dy = 10;
 		change = false;

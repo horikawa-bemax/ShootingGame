@@ -14,7 +14,7 @@ public class Kero extends Enemy{
 		shadowArry = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
-		rect = new Rect(0,0,imgWidth, imgHeight);
+		drawingExtent = new Rect(0,0,imgWidth, imgHeight);
 
 		life = HP;
 		defeatPoint = 10;
@@ -31,13 +31,13 @@ public class Kero extends Enemy{
 		case LIVE:
 		case HIT:
 			// 座標更新
-			rect.offset(dx, dy);
+			drawingExtent.offset(dx, dy);
 			// 横壁で跳ね返る
-			if(rect.left < 0){
-				rect.offsetTo(0, rect.top);
+			if(drawingExtent.left < 0){
+				drawingExtent.offsetTo(0, drawingExtent.top);
 				dx = -dx;
-			}else if(rect.right > 480){
-				rect.offsetTo(480-imgWidth, rect.top);
+			}else if(drawingExtent.right > 480){
+				drawingExtent.offsetTo(480-imgWidth, drawingExtent.top);
 				dx = -dx;
 			}
 
@@ -63,7 +63,7 @@ public class Kero extends Enemy{
 	}
 
 	public void reset(){
-		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
+		drawingExtent.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
 		dx = rand.nextInt(5) - 9;
 		dy = rand.nextInt(5) + 5;
 	}

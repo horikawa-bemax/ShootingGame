@@ -19,7 +19,7 @@ public class Enemy03 extends Enemy{
 		shadowArry = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
-		rect = new Rect(0,0,imgWidth, imgHeight);
+		drawingExtent = new Rect(0,0,imgWidth, imgHeight);
 
 		life = HP;
 		defeatPoint = 40;
@@ -43,18 +43,18 @@ public class Enemy03 extends Enemy{
 			int lx = (int)(Math.cos(d)*len);
 			int ly = (int)(Math.sin(d)*len);
 
-			rect.offset(dx, dy);
+			drawingExtent.offset(dx, dy);
 
-			if(rect.left < 0){
-				rect.offsetTo(0, rect.top);
+			if(drawingExtent.left < 0){
+				drawingExtent.offsetTo(0, drawingExtent.top);
 				dx = -dx;
-			}else if(rect.right > 480){
-				rect.offsetTo(480-imgWidth, rect.top);
+			}else if(drawingExtent.right > 480){
+				drawingExtent.offsetTo(480-imgWidth, drawingExtent.top);
 				dx = -dx;
 			}
 
 			matrix.setTranslate(getX()+lx, getY()+ly);
-			if(rect.top > 800){
+			if(drawingExtent.top > 800){
 				reset();
 			}
 			break;
@@ -84,7 +84,7 @@ public class Enemy03 extends Enemy{
 
 	public void reset(){
 		deg = 0;
-		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
+		drawingExtent.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
 		dx = rand.nextInt(5) - 10;
 		dy = rand.nextInt(5) + 5;
 	}

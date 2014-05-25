@@ -21,7 +21,7 @@ public class Bigkero extends Enemy {
 		shadowArry = getShadow();								// 当たり判定用の配列を作成
 		imgWidth = image.getWidth();							// イメージの幅
 		imgHeight = image.getHeight();							// イメージの高さ
-		rect = new Rect(0, 0, imgWidth, imgHeight);		// イメージの範囲
+		drawingExtent = new Rect(0, 0, imgWidth, imgHeight);		// イメージの範囲
 		
 		/* 撃破ポイント */
 		defeatPoint = 20;
@@ -40,7 +40,7 @@ public class Bigkero extends Enemy {
 		case HIT:		// 弾が当たった状態
 			
 			/* dx,dy分だけキャラを移動させる */
-			rect.offset(dx, dy);
+			drawingExtent.offset(dx, dy);
 			matrix.setTranslate(getX(), getY());
 			
 			break;
@@ -64,7 +64,7 @@ public class Bigkero extends Enemy {
 
 	/* 初期状態に戻す */
 	public void reset(){
-		rect.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
+		drawingExtent.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
 		dx = 0;
 		dy = 5;
 		life = 5;
