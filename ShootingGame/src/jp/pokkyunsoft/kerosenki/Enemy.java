@@ -1,4 +1,4 @@
-package bemax.shootinggame;
+package jp.pokkyunsoft.kerosenki;
 
 import java.util.Random;
 

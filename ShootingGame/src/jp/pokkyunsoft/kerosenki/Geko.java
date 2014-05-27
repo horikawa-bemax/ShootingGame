@@ -1,4 +1,4 @@
-package bemax.shootinggame;
+package jp.pokkyunsoft.kerosenki;
 
 import android.content.res.Resources;
 import android.graphics.Rect;

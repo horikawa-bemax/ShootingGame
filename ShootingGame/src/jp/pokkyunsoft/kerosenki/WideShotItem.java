@@ -1,17 +1,17 @@
-package bemax.shootinggame;
+package jp.pokkyunsoft.kerosenki;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
 
 /**
- * スピードショットのアイテム
- * このアイテムを取ると、弾の発射速度、発射可能弾数が増加する。
- * @author masaaki
+ * ワイドショットのアイテム。
+ * このアイテムを取ると、弾が広範囲に発射できる。
+ * @author 
  *
  */
-public class SpeedShotItem extends Item {
+public class WideShotItem extends Item {
 
-	public SpeedShotItem(Resources r) {
+	public WideShotItem(Resources r) {
 		super(r);
 		// TODO アイテム画像の読み込み、パラメータの初期化
 	}
@@ -27,7 +27,6 @@ public class SpeedShotItem extends Item {
 		// TODO アイテムの描画座標をdx,dy分移動し、書き換える
 		
 	}
-
 
 
 }

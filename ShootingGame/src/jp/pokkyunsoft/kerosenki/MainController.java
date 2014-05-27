@@ -1,4 +1,4 @@
-package bemax.shootinggame;
+package jp.pokkyunsoft.kerosenki;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

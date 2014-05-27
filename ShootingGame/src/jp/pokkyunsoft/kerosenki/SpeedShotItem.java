@@ -1,17 +1,17 @@
-package bemax.shootinggame;
+package jp.pokkyunsoft.kerosenki;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
 
 /**
- * パワーショットのアイテム
- * このアイテムを取ると、パワーアップした弾を発射できる。
- * @author 
+ * スピードショットのアイテム
+ * このアイテムを取ると、弾の発射速度、発射可能弾数が増加する。
+ * @author masaaki
  *
  */
-public class PowerShotItem extends Item {
+public class SpeedShotItem extends Item {
 
-	public PowerShotItem(Resources r) {
+	public SpeedShotItem(Resources r) {
 		super(r);
 		// TODO アイテム画像の読み込み、パラメータの初期化
 	}
@@ -27,5 +27,7 @@ public class PowerShotItem extends Item {
 		// TODO アイテムの描画座標をdx,dy分移動し、書き換える
 		
 	}
+
+
 
 }

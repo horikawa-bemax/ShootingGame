@@ -1,17 +1,17 @@
-package bemax.shootinggame;
+package jp.pokkyunsoft.kerosenki;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
 
 /**
- * ワイドショットのアイテム。
- * このアイテムを取ると、弾が広範囲に発射できる。
+ * パワーショットのアイテム
+ * このアイテムを取ると、パワーアップした弾を発射できる。
  * @author 
  *
  */
-public class WideShotItem extends Item {
+public class PowerShotItem extends Item {
 
-	public WideShotItem(Resources r) {
+	public PowerShotItem(Resources r) {
 		super(r);
 		// TODO アイテム画像の読み込み、パラメータの初期化
 	}
@@ -27,6 +27,5 @@ public class WideShotItem extends Item {
 		// TODO アイテムの描画座標をdx,dy分移動し、書き換える
 		
 	}
-
 
 }
