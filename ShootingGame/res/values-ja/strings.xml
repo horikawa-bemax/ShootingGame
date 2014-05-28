@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ケロ戦記</string>
-    <string name="start">タイトルにタッチしてスタート</string>
+    <string name="start">画面にタッチしてスタート</string>
     <string name="game_over">ゲーム オーバー</string>
     <string name="score_lavel">得点</string>
-
+    <string name="startImage">startImage</string>
+    <string name="yukiImage">yukiImage</string>
+    <string name="graphics">graphics: 神谷芽衣 杉山広恵 高畠未奈 (BeMax)</string>
 </resources>
