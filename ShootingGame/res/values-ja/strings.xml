@@ -4,5 +4,7 @@
     <string name="start">タイトルにタッチしてスタート</string>
     <string name="game_over">ゲーム オーバー</string>
     <string name="score_lavel">得点</string>
-
+    <string name="startImage">startImage</string>
+    <string name="yukiImage">yukiImage</string>
+    <string name="graphics">graphics: 神谷芽衣 杉山広恵 高畠未奈 (BeMax)</string>
 </resources>
