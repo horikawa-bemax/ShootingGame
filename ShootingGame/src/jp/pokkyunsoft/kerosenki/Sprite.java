@@ -14,15 +14,15 @@ import android.graphics.Rect;
  * 2012.9.13 update 2014.5.22
  */
 public abstract class Sprite {
-	protected Resources res;						// リソース元
-	protected Matrix matrix;						// 画像移動ようマトリックス
-	//protected float[] values;						// 
-	protected int dx;									// 横方向の移動量
-	protected int dy;									// 縦方向の移動量
+	protected Resources res;					// リソース元
+	protected Matrix matrix;					// 画像移動ようマトリックス
+	//protected float[] values;					// 
+	protected int dx;							// 横方向の移動量
+	protected int dy;							// 縦方向の移動量
 	protected Bitmap image;						// スプライトのイメージ画像
-	protected boolean[][] shadowArry;		// 当たり判定用の配列
+	protected boolean[][] shadowArry;			// 当たり判定用の配列
 	protected int imgWidth;						// イメージ画像の幅
-	protected int imgHeight;						// イメージ画像の高さ
+	protected int imgHeight;					// イメージ画像の高さ
 	protected Rect drawingExtent;				// 描画範囲
 
 	/**

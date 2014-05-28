@@ -74,6 +74,6 @@ public class Kero extends Enemy{
 	 */
 	@Override
 	public void move(MyPlane mp) {
-		
+		move();
 	}
 }

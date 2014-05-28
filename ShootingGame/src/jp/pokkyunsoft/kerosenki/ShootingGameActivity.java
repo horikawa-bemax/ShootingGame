@@ -53,7 +53,7 @@ public class ShootingGameActivity extends Activity implements OnTouchListener{
 				switch(msg.what){
 				case 0:
 					setContentView(R.layout.title);
-					titleView = (ImageView)findViewById(R.id.plane_image);
+					titleView = (ImageView)findViewById(R.id.titleImage);
 					titleView.setOnTouchListener((OnTouchListener)thisObj);
 
 			        /* サウンド関連の初期化 */

@@ -10,6 +10,7 @@ import android.graphics.Rect;
  * 2014.5.25
  */
 public class Bigkero extends Enemy {
+	
 	private final int DISP_SIZE = 160;	// 画面上の表示サイズ
 
 	/** コンストラクタ */
@@ -21,7 +22,7 @@ public class Bigkero extends Enemy {
 		shadowArry = getShadow();								// 当たり判定用の配列を作成
 		imgWidth = image.getWidth();							// イメージの幅
 		imgHeight = image.getHeight();							// イメージの高さ
-		drawingExtent = new Rect(0, 0, imgWidth, imgHeight);		// イメージの範囲
+		drawingExtent = new Rect(0, 0, imgWidth, imgHeight);	// イメージの範囲
 		
 		/* 撃破ポイント */
 		defeatPoint = 20;
@@ -76,7 +77,6 @@ public class Bigkero extends Enemy {
 	 */
 	@Override
 	public void move(MyPlane mp) {
-		// TODO 自動生成されたメソッド・スタブ
-		
+		move();
 	}
 }
