@@ -14,6 +14,7 @@ public class MyPlane extends Sprite {
 	private int bno;						// 弾番号
 	private long shoottime;			// 弾を撃った時間
 	private final int MOVE = 20;	// 移動量
+	private Cannon cannon;
 
 	/**
 	 * コンストラクタ
@@ -35,6 +36,8 @@ public class MyPlane extends Sprite {
 
 		// 弾番号の初期化
 		bno = 0;
+		cannon = new Cannon();
+		cannon.set();
 	}
 
 	/**
