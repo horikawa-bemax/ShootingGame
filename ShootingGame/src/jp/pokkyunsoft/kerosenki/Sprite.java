@@ -131,11 +131,11 @@ public abstract class Sprite {
 
 	/**
 	 * リソースから画像ファイルを読み込んで、ビットマップを作る
-	 * @param id	画像リソースのID
+	 * @param r	画像リソースのID
 	 * @param size	取り込む画像の出力サイズ
 	 * @return 取り込んだビットマップ
 	 */
-	protected Bitmap setImage(int id, int size){
+	protected Bitmap setImage(int r, int size){
 		int decodeScale = 1;	// 画像デコード時のスケール
 		int	longSide = 0;			// 長辺のサイズ
 		Bitmap result;
@@ -143,7 +143,7 @@ public abstract class Sprite {
 		
 		// ビットマップのサイズだけを先読みして、効果的に画像を読み込む準備
 		op.inJustDecodeBounds = true;
-		result = BitmapFactory.decodeResource(res, id, op);
+		result = BitmapFactory.decodeResource(res, r, op);
 		if(op.outWidth > op.outHeight){
 			longSide = op.outWidth;
 		}else{
@@ -156,7 +156,7 @@ public abstract class Sprite {
 		
 		// ビットマップ画像を取り込む
 		op.inSampleSize = decodeScale;
-		result = BitmapFactory.decodeResource(res, id, op);
+		result = BitmapFactory.decodeResource(res, r, op);
 		Matrix matrix = new Matrix();
 		float matrixScale = 1.0f;
 		if(result.getWidth() > result.getHeight()){
@@ -184,4 +184,14 @@ public abstract class Sprite {
 	public int getY(){
 		return drawingExtent.top;
 	}
+	
+	public int centerX(){
+		return drawingExtent.centerX();
+	}
+	
+	public int centerY(){
+		return drawingExtent.centerY();
+	}
+	
+	protected abstract void reset();
 }

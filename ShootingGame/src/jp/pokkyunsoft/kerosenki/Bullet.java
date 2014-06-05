@@ -8,9 +8,9 @@ import android.graphics.Rect;
  * 弾クラス
  * @author Masaaki Horikawa
  */
-public class Bullet extends Sprite {
-	protected final int BULLET_SIZE = 48;		// 弾のサイズ
-	private boolean readyFlg;							// 弾が発射状態かそうでないかを示すフラグ
+public abstract class Bullet extends Sprite {
+	protected final int BULLET_SIZE = 36;		// 弾のサイズ
+	protected boolean readyFlg;					// 弾が発射状態かそうでないかを示すフラグ
 
 	/**
 	 * コンストラクタ
@@ -18,12 +18,14 @@ public class Bullet extends Sprite {
 	 */
 	public Bullet(Resources r){
 		super(r);
-		
+	}
+	
+	protected void init(){
 		/* 画像の初期化 */
-		image = setImage(R.drawable.bullet, BULLET_SIZE);		// イメージを取り込み
-		shadowArry = getShadow();											// 当たり判定用配列をセット
-		imgWidth = image.getWidth();										// 画像の横幅
-		imgHeight = image.getHeight();										// 画像の縦幅
+		//image = setImage(drawable, BULLET_SIZE);				// イメージを取り込み
+		shadowArry = getShadow();								// 当たり判定用配列をセット
+		imgWidth = image.getWidth();							// 画像の横幅
+		imgHeight = image.getHeight();							// 画像の縦幅
 		drawingExtent = new Rect(0, 0, imgWidth, imgHeight);	// 画像の描画範囲をセット
 
 		/* 移動量の初期化 */
@@ -43,7 +45,9 @@ public class Bullet extends Sprite {
 	 */
 	@Override
 	public void draw(Canvas canvas) {
-		canvas.drawBitmap(image, matrix, null);
+		if(!readyFlg){
+			canvas.drawBitmap(image, matrix, null);
+		}
 	}
 
 	/**
@@ -51,6 +55,8 @@ public class Bullet extends Sprite {
 	 */
 	@Override
 	public void move() {
+		if(readyFlg) return;
+		
 		/* 描画範囲をdx,dy分平衡移動する */
 		drawingExtent.offset(dx, dy);
 
@@ -75,18 +81,20 @@ public class Bullet extends Sprite {
 	 * @param x 発射位置のx座標
 	 * @param y 発射位置のy座標
 	 */
-	public void shoot(MyPlane mp){
-		/* 弾の初期位置を設定 */
-		int x = mp.drawingExtent.centerX() - imgWidth / 2;
-		int y = mp.drawingExtent.top;
+	public abstract void shoot(int x, int y);
+	/*{
+		/* 弾の初期位置を設定 
+		//int x = mp.drawingExtent.centerX() - imgWidth / 2;
+		//int y = mp.drawingExtent.top;
+		x = x - imgWidth / 2;
 		drawingExtent.set(x, y, x+imgWidth, y+imgHeight);
 
-		/* 弾の初速度を設定 */
+		/* 弾の初速度を設定 
 		dy = -25;
 
-		/* 発射準備NGにする＝＞発射中 */
+		/* 発射準備NGにする＝＞発射中 
 		readyFlg = false;
-	}
+	}*/
 
 	/**
 	 * 弾が発射中かどうか

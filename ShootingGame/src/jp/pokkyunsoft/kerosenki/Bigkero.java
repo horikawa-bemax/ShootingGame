@@ -10,9 +10,8 @@ import android.graphics.Rect;
  * 2014.5.25
  */
 public class Bigkero extends Enemy {
-	
 	private final int DISP_SIZE = 160;	// 画面上の表示サイズ
-
+	
 	/** コンストラクタ */
 	public Bigkero(Resources r) {
 		super(r);
@@ -26,7 +25,7 @@ public class Bigkero extends Enemy {
 		
 		/* 撃破ポイント */
 		defeatPoint = 20;
-
+		
 		/* 初期化 */
 		reset();
 	}
@@ -48,6 +47,7 @@ public class Bigkero extends Enemy {
 		case DEAD:	// 死んでいる状態
 			deadCount--;
 			if(deadCount==0){
+				
 				state = HIDE;
 				deadCount = 10;
 				reset();

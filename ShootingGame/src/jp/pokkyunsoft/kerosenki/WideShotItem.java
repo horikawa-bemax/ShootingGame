@@ -28,5 +28,23 @@ public class WideShotItem extends Item {
 		
 	}
 
+	@Override
+	public void itemGet(MyPlane mp) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
+	@Override
+	public void appear(int centerX, int centerY) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
+	@Override
+	protected void reset() {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
 
 }

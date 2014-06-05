@@ -32,14 +32,16 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 	private Bitmap logImage;
 	private MyPlane myplane;
 	private Enemy[] enemies;
-	private Bullet[] bullets;
+	private Bullet[] myBullets;
+	private Bullet[] enemyBullets;
+	private Item item;
 	private BackScreen backScreen;
 	private boolean loop, gameover;
 	private int score, se;
 	private MediaPlayer player;
 	private SoundPool pool;
 	private static final int ENEMIES = 10;
-	private static final int BULLETS = 6;
+	private static final int MAX_BULLETS = 6;
 	
 	/**
 	 * コンストラクタ
@@ -54,7 +56,8 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 		
 		/* 敵と弾の配列を初期化 */
 		enemies = new Enemy[ENEMIES];
-		bullets = new Bullet[BULLETS];
+		myBullets = new MyBullet[MAX_BULLETS];
+		//enemyBullets = new EnemyBullet[20];
 
 		/* 自機の初期化 */
 		myplane = new MyPlane(gameView.getResources());
@@ -71,10 +74,15 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 		enemies[8] = new Kero(gameView.getResources());
 		enemies[9] = new Geko(gameView.getResources());
 		
-		/* 弾の初期化 */
-		for(int i=0; i<bullets.length; i++){
-			bullets[i] = new Bullet(gameView.getResources());
+		/* 自機 弾の初期化 */
+		for(int i=0; i<myBullets.length; i++){
+			myBullets[i] = new MyBullet(gameView.getResources());
 		}
+		
+		/* 敵 弾の初期化 */
+		
+		/* アイテムの初期化 */
+		item = new PowerShotItem(gameView.getResources());
 		
 		/* 背景の初期化 */
 		backScreen = new BackScreen(gameView.getResources());
@@ -108,93 +116,115 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 		
 		/* メインルーチン */
 		try{
-		while(loop){
-			/* ループ開始じの時刻を記録 */
-			st = System.currentTimeMillis();
-			
-			/* 敵の出現数をコントロール (300点ごとに敵が増えるように) */
-			if(eNum < 10 && eNum < score / 300 + 3){
-				eNum++;									// 敵の数を増やす
-			}
-			
-			/* 敵の移動 */
-			for(int i=0; i<eNum; i++){
-				enemies[i].move(myplane);
-				if(enemies[i].outOfArea(logRect)){
-					enemies[i].reset();
+			while(loop){
+				/* ループ開始時の時刻を記録 */
+				st = System.currentTimeMillis();
+				
+				/* 敵の出現数をコントロール (300点ごとに敵が増えるように) */
+				if(eNum < 10 && eNum < score / 300 + 3){
+					eNum++;									// 敵の数を増やす
 				}
-			}
-			
-			/* 発射中の弾の移動 */
-			for(int i=0; i<bullets.length; i++){
-				bullets[i].move();
-			}
-			
-			/* 自機の移動 */
-			myplane.move();
-			
-			/* 自機の攻撃 */
-			myplane.shoot(bullets);
-			
-			/* 敵と弾のあたり判定 */
-			for(int i=0; i<bullets.length; i++){
-				for(int j=0; j<eNum; j++){
-					if(!bullets[i].getReady() && enemies[j].state == Enemy.LIVE && bullets[i].hit(enemies[j])){
-						if(enemies[j].damage()<=0){
-							enemies[j].state = Enemy.DEAD;
-							
-							pool.play(se, 0.3f, 0.3f, 0, 0, 1.0f);
-							
-							score += enemies[j].getDefeatPoint();
+				
+				/* 敵の移動 */
+				for(int i=0; i<eNum; i++){
+					enemies[i].move(myplane);
+					if(enemies[i].outOfArea(logRect)){
+						enemies[i].reset();
+					}
+				}
+				
+				/* 敵の砲撃 */
+				
+				/* 敵弾の移動 */
+				
+				/* アイテムの移動 */
+				item.move();
+				
+				/* 自機の移動 */
+				myplane.move();
+				
+				/* 自機の砲撃 */
+				myplane.shoot(myBullets);
+				
+				/* 自弾の移動 */
+				for(int i=0; i<myBullets.length; i++){
+					myBullets[i].move();
+				}
+				
+				/* 敵と弾のあたり判定 */
+				for(int i=0; i<myBullets.length; i++){
+					for(int j=0; j<eNum; j++){
+						if(!myBullets[i].getReady() && enemies[j].state == Enemy.LIVE && myBullets[i].hit(enemies[j])){
+							if(enemies[j].damage()<=0){
+								enemies[j].state = Enemy.DEAD;
+								
+								/* 爆発音再生 */
+								pool.play(se, 0.3f, 0.3f, 0, 0, 1.0f);
+								
+								/* スコア更新 */
+								score += enemies[j].getDefeatPoint();
+								
+								if(enemies[j].getClass()==(Class<?>)Bigkero.class && (int)(Math.random()*10) < 2 ){
+									item.appear(enemies[j].centerX(), enemies[j].centerY());
+								}
+							}
+							myBullets[i].reset();
 						}
-						bullets[i].reset();
+					}
+				}
+				
+				/* 敵と自機のあたり判定 */
+				hit_enemy:
+				for(int i=0; i<eNum; i++){
+					if(enemies[i].state == Enemy.LIVE && enemies[i].hit(myplane)){
+						loop = false;
+						enemies[i].state = Enemy.DEAD;
+	
+						pool.play(se, 0.3f, 0.3f, 0, 0, 1.0f);
+						
+						gameover = true;
+						
+						break hit_enemy;
+					}
+				}
+				
+				/* 自機と敵弾の当たり判定 */
+				
+				/* 自機とアイテムの当たり判定 */
+				if(myplane.hit(item)){
+					item.itemGet(myplane);
+				}
+				
+				/* 各エレメント描画 */
+				logCanvas.drawColor(Color.BLACK);
+				backScreen.drawBackScreen(logCanvas);
+				for(int i=0; i<eNum; i++){
+					enemies[i].draw(logCanvas);
+				}
+				for(int i=0; i<myBullets.length; i++){
+					myBullets[i].draw(logCanvas);
+				}
+				item.draw(logCanvas);
+				myplane.draw(logCanvas);
+				
+				/* 得点を表示 */
+				logCanvas.drawText("SCORE:" + score, 300, 30, paint);
+				
+				/* 実際の画面に反映 */
+				canvas = gameView.getHolder().lockCanvas();
+				canvas.drawBitmap(logImage, logRect, phgRect, null);
+				gameView.getHolder().unlockCanvasAndPost(canvas);
+				
+				et = System.currentTimeMillis();
+				dist = et - st;
+				if(dist<20){
+					try {
+						Thread.sleep(20 - dist);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
 			}
-			
-			/* 敵と自機のあたり判定 */
-			hit_enemy:
-			for(int i=0; i<eNum; i++){
-				if(enemies[i].state == Enemy.LIVE && enemies[i].hit(myplane)){
-					loop = false;
-					enemies[i].state = Enemy.DEAD;
-
-					pool.play(se, 0.3f, 0.3f, 0, 0, 1.0f);
-					
-					gameover = true;
-					
-					break hit_enemy;
-				}
-			}
-			
-			/* 各エレメント描画 */
-			logCanvas.drawColor(Color.BLACK);
-			backScreen.drawBackScreen(logCanvas);
-			for(int i=0; i<eNum; i++){
-				enemies[i].draw(logCanvas);
-			}
-			for(int i=0; i<bullets.length; i++){
-				bullets[i].draw(logCanvas);
-			}
-			myplane.draw(logCanvas);
-			/* 得点を表示 */
-			logCanvas.drawText("SCORE:" + score, 300, 30, paint);
-			
-			/* 実際の画面に反映 */
-			canvas = gameView.getHolder().lockCanvas();
-			canvas.drawBitmap(logImage, logRect, phgRect, null);
-			gameView.getHolder().unlockCanvasAndPost(canvas);
-			
-			et = System.currentTimeMillis();
-			dist = et - st;
-			if(dist<20){
-				try {
-					Thread.sleep(20 - dist);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
 		}catch(NullPointerException e){
 			e.printStackTrace();
 		}

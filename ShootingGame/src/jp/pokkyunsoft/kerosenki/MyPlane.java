@@ -10,12 +10,18 @@ import android.graphics.Rect;
  * 2012.9.19
  */
 public class MyPlane extends Sprite {
-	private int tx, ty;
-	private int bno;						// 弾番号
-	private long shoottime;			// 弾を撃った時間
+	/* 移動に関する変数 */
 	private final int MOVE = 20;	// 移動量
-	private Cannon cannon;
-
+	private int tx, ty;
+	/* 弾に関する変数 */
+	private int bno;				// 弾番号
+	private long shoottime;			// 弾を撃った時間
+	private int firingInterval;		// 発射間隔
+	private int bulletNum;			// 連射できる弾数
+	
+	private final int DEFAULT_BULLET_NUM = 3;
+	private final int DEFAULT_FIRING_INTERVAL = 150;
+	
 	/**
 	 * コンストラクタ
 	 * @param img 主人公機のビットマップデータ
@@ -28,17 +34,9 @@ public class MyPlane extends Sprite {
 		imgHeight = image.getHeight();
 		drawingExtent = new Rect(0,0,imgWidth, imgHeight);
 
-		// 位置の初期化
-		drawingExtent.offsetTo(240 - imgWidth/2, 700 - imgHeight);
-		tx = drawingExtent.centerX();
-		ty = drawingExtent.centerY();
-		dx = dy = 0;
-
-		// 弾番号の初期化
-		bno = 0;
-		cannon = new Cannon();
-		cannon.set();
+		reset();
 	}
+
 
 	/**
 	 * 動く
@@ -46,7 +44,7 @@ public class MyPlane extends Sprite {
 	public void move() {
 		// 目標地点との距離を算出
 		int ddx = tx - drawingExtent.centerX();
-		int ddy = ty - drawingExtent.centerY();
+		int ddy = ty - drawingExtent.centerY() - 80;
 		float len = (float)Math.sqrt(ddx*ddx+ddy*ddy);
 
 		// 移動先座標を算出
@@ -75,6 +73,7 @@ public class MyPlane extends Sprite {
 		// マトリックス
 		matrix.setTranslate(drawingExtent.left, drawingExtent.top);
 		//matrix.setValues(values);
+
 	}
 
 	/**
@@ -104,18 +103,54 @@ public class MyPlane extends Sprite {
 		long interval = System.currentTimeMillis() - shoottime;
 
 		// 弾をうつ条件が整ったら
-		if(b[bno].getReady() && interval > 100){
+		if(b[bno].getReady() && interval > firingInterval){
 			// 弾を撃つ
-			b[bno].shoot(this);
+			b[bno].shoot(this.drawingExtent.centerX(), this.drawingExtent.top);
 
 			// 次の弾の準備
 			bno++;
-			if (bno==b.length/2){
+			if (bno >= bulletNum){
 				bno = 0;
 			}
 
 			// 弾を撃った時刻を記録
 			shoottime = System.currentTimeMillis();
 		}
+	}
+
+	/**
+	 * 弾の発射が早くなる
+	 */
+	public void speedUp(){
+		bulletNum = DEFAULT_BULLET_NUM * 2;
+		firingInterval = DEFAULT_FIRING_INTERVAL / 2;
+	}
+	
+	/**
+	 * 弾の威力が上がる
+	 */
+	public void powerUp(){
+		bulletNum = DEFAULT_BULLET_NUM * 2;
+		firingInterval = DEFAULT_FIRING_INTERVAL / 2;
+	}
+	
+	/**
+	 * 弾が広範囲に飛ぶ
+	 */
+	public void wideUp(){
+		
+	}
+
+	@Override
+	protected void reset() {
+		// 位置の初期化
+		drawingExtent.offsetTo(240 - imgWidth/2, 700 - imgHeight);
+		tx = drawingExtent.centerX();
+		ty = drawingExtent.centerY();
+		dx = dy = 0;
+
+		/* 発射間隔の初期化 */
+		firingInterval = DEFAULT_FIRING_INTERVAL;
+		bulletNum = DEFAULT_BULLET_NUM;
 	}
 }
