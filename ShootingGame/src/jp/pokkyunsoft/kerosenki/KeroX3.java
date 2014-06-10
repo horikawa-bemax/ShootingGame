@@ -8,14 +8,14 @@ import android.graphics.Rect;
  * @author masaaki
  *
  */
-public class Enemy03 extends Enemy{
+public class KeroX3 extends Enemy{
 	private int len;
 	private float deg;
-	private final int HP = 3;
+	private final int HP = 15;
 
-	public Enemy03(Resources r) {
+	public KeroX3(Resources r) {
 		super(r);
-		image = setImage(R.drawable.kero,80);
+		image = setImage(R.drawable.kerox3,80);
 		shadowArry = getShadow();
 		imgWidth = image.getWidth();
 		imgHeight = image.getHeight();
@@ -31,7 +31,7 @@ public class Enemy03 extends Enemy{
 	}
 
 	@Override
-	public void move() {
+	public void move(MyPlane mp) {
 		switch(state){
 		case LIVE:
 
@@ -78,14 +78,16 @@ public class Enemy03 extends Enemy{
 		}
 	}
 
-	public void move(MyPlane mp){
-		move();
-	}
-
 	public void reset(){
 		deg = 0;
 		drawingExtent.offsetTo(rand.nextInt(480-imgWidth), -imgHeight);
 		dx = rand.nextInt(5) - 10;
 		dy = rand.nextInt(5) + 5;
 	}
+
+	@Override
+	public void move() {
+		
+	}
+
 }

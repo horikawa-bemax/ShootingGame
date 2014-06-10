@@ -50,12 +50,6 @@ public abstract class Enemy extends Sprite{
 	public abstract void move(MyPlane mp);
 
 	/**
-	 * 敵の動き
-	 */
-	@Override
-	public abstract void move();
-
-	/**
 	 * 初期データに戻す
 	 */
 	public abstract void reset();
