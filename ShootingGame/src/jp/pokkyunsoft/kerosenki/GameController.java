@@ -23,7 +23,7 @@ import android.view.View.OnTouchListener;
  * @author Masaaki Horikawa
  * 2014.5.22
  */
-public class MainController implements Runnable, OnTouchListener, SurfaceHolder.Callback{
+public class GameController implements Runnable, OnTouchListener, SurfaceHolder.Callback{
 	private SurfaceView gameView;
 	private SurfaceHolder holder;
 	private Handler handler;
@@ -48,7 +48,7 @@ public class MainController implements Runnable, OnTouchListener, SurfaceHolder.
 	 * @param view	ゲームを描くサーフェイスビュー
 	 * @param hnd	画面切り替え用のハンドラ
 	 */
-	public MainController(SurfaceView view, Handler hnd){
+	public GameController(SurfaceView view, Handler hnd){
 		gameView = view;
 		holder = gameView.getHolder();
 		holder.addCallback(this);

@@ -66,7 +66,7 @@ public class ShootingGameActivity extends Activity implements OnTouchListener{
 					setContentView(R.layout.main);
 			        // サーフェイスビューをセット
 			        surfaceview = (SurfaceView)findViewById(R.id.GameView);
-			        MainController main = new MainController(surfaceview, this);
+			        GameController main = new GameController(surfaceview, this);
 			        surfaceview.getHolder().addCallback(main);
 					break;
 				case 2:
